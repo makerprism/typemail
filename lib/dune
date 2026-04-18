@@ -12,6 +12,7 @@
   html_builder
   image
   paragraph
+  render
   section
   spacing
   spacer

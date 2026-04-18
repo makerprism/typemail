@@ -169,4 +169,30 @@ let () =
   let img3_html = Element.to_html img3_elem in
   Printf.printf "Image 3 test passed. HTML: %s\n" img3_html;
 
+  (* Test Render module *)
+  let simple_email_section = Section.v [
+    Heading.to_element (Heading.h1 "Welcome to typemail");
+    Paragraph.to_element (Paragraph.v "This is a test email.");
+    Button.to_element (Button.v
+      ~href:"https://example.com"
+      ~background:(Color.solid "#4f46e5")
+      ~text_color:Color.Brand.white
+      ~width_px:200
+      ~height_px:44
+      "Get Started");
+  ] in
+  let simple_email = Section.to_element simple_email_section in
+  match Render.render_html simple_email with
+  | Ok html -> Printf.printf "render_html test passed. Length: %d bytes\n" (String.length html)
+  | Error msg -> Printf.printf "render_html test failed: %s\n" msg;
+
+  match Render.render_email simple_email with
+  | Ok email_html -> Printf.printf "render_email test passed. Length: %d bytes\n" (String.length email_html)
+  | Error msg -> Printf.printf "render_email test failed: %s\n" msg;
+
+  (* Test Gmail limit checking *)
+  let small_email_section = Section.v [Heading.to_element (Heading.h2 "Small")] in
+  let small_email = Section.to_element small_email_section in
+  Printf.printf "Small email within Gmail limit: %b\n" (Render.within_gmail_limit (Element.to_html small_email));
+
   Printf.printf "\n✅ All tests passed!\n"

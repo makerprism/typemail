@@ -30,6 +30,9 @@ module Image = Typemail__Image
 (** @canonical Typemail.Paragraph *)
 module Paragraph = Typemail__Paragraph
 
+(** @canonical Typemail.Render *)
+module Render = Typemail__Render
+
 (** @canonical Typemail.Section *)
 module Section = Typemail__Section
 

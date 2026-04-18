@@ -68,39 +68,74 @@ MJML's `<mj-raw>` is the single biggest source of cross-client bugs in MJML code
 
 ## Getting started
 
-*Coming soon — the Phase 1 library is in design.*
+typemail v0.1 is now available for integration into OCaml backends.
 
-Planned usage sketch (subject to change):
+### Installation
+
+Add typemail to your `dune-project`:
+
+```lisp
+(depends
+  (typemail (>= 0.1)))
+```
+
+Run `dune pkg lock` to generate the lockfile, then `dune build` to install.
+
+### Usage
 
 ```ocaml
 open Typemail
 
-let invitation ~inviter_name ~presence_name ~invitation_url =
-  email
-    ~subject:(Printf.sprintf "You've been invited to %s" presence_name)
-    ~preheader:(Some (Printf.sprintf "%s invited you." inviter_name))
-    [ Section.v ~background:(Solid Brand.indigo_900)
-        [ Column.v
-            [ Heading.h1 ~color:Brand.white "You're invited"
-            ; Paragraph.v
-                (Printf.sprintf "%s invited you to collaborate on %s."
-                   inviter_name presence_name)
-            ; Button.v
-                ~href:invitation_url
-                ~background:(Solid Brand.indigo_600)
-                ~text_color:Brand.white
-                "Accept invitation"
-            ]
-        ]
-    ]
+let invitation_email ~inviter_name ~presence_name ~invitation_url =
+  (* Build email using typed components *)
+  let body = Section.v [
+    (* Gradient header with Outlook fallback *)
+    Section.to_element @@ Section.make
+      ~background:(Color.gradient
+        ~direction:"to bottom"
+        ~colors:["#312e81"; "#4f46e5"]
+        ~fallback:(Color.solid "#312e81"))
+      ~padding:(Spacing.Spacing.px32)
+      ~children:[
+        Heading.to_element @@ Heading.h1 ~color:Color.Brand.white
+          (Printf.sprintf "You're invited to %s" presence_name);
+        Paragraph.to_element @@ Paragraph.v ~color:Color.Brand.white
+          (Printf.sprintf "%s invited you to collaborate." inviter_name);
+      ]
+      () ;
 
-let () =
-  print_endline (Typemail.render_html
-    (invitation
-       ~inviter_name:"Alice"
-       ~presence_name:"Acme Social"
-       ~invitation_url:"https://example.com/invite/abc"))
+    (* Call-to-action button with VML for Outlook *)
+    Section.to_element @@ Section.make
+      ~padding:(Spacing.Spacing.px24)
+      ~children:[
+        Button.to_element @@ Button.v
+          ~href:invitation_url
+          ~background:(Color.solid "#4f46e5")
+          ~text_color:Color.Brand.white
+          ~width_px:200
+          ~height_px:44
+          "Accept invitation";
+      ]
+      () ;
+  ] in
+
+  (* Render to complete HTML document *)
+  match Render.render_email body with
+  | Ok html -> html
+  | Error msg ->
+      Printf.printf "Error: %s\n" msg;
+      ""
 ```
+
+### Key Benefits
+
+✅ **Type-safe**: Required fields (alt text, button dimensions) enforced at compile time
+✅ **Cross-client**: VML fallbacks for Outlook, gradients with fallbacks
+✅ **No escape hatches**: Can't inject raw HTML, preventing XSS bugs
+✅ **Accessibility**: Distinct Heading levels, required alt text
+✅ **caniemail-backed**: Every component cites compatibility documentation
+
+See `docs/examples/invitation.ml` for a complete working example.
 
 ## Contributing
 

@@ -1,4 +1,4 @@
-# dune exec ./test/test.exe
+# dune exec -- bash -c 'ocamlfind ocamlc -o test_render.exe -package typemail -linkpkg test_render.ml && ./test_render.exe'
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/sabine/.cache/dune/db
@@ -13,4 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/sabine/.opam/okra/bin/ocamlc.opt -config > /tmp/dune_c99db3_output
+$ /home/sabine/.opam/okra/bin/ocamlc.opt -config > /tmp/dune_7e8cb9_output

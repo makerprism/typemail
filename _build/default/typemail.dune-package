@@ -25,6 +25,8 @@
    image.mli
    paragraph.ml
    paragraph.mli
+   render.ml
+   render.mli
    section.ml
    section.mli
    spacer.ml
@@ -78,6 +80,10 @@
    typemail__Paragraph.cmt
    typemail__Paragraph.cmti
    typemail__Paragraph.cmx
+   typemail__Render.cmi
+   typemail__Render.cmt
+   typemail__Render.cmti
+   typemail__Render.cmx
    typemail__Section.cmi
    typemail__Section.cmt
    typemail__Section.cmti
@@ -171,6 +177,10 @@
        (path Paragraph)
        (intf (path paragraph.mli))
        (impl (path paragraph.ml))))
+     (module
+      (obj_name typemail__Render)
+      (visibility public)
+      (source (path Render) (intf (path render.mli)) (impl (path render.ml))))
      (module
       (obj_name typemail__Section)
       (visibility public)
