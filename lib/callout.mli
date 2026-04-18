@@ -6,9 +6,9 @@
     table (so it works in Outlook, which ignores CSS `border-left`).
 
     caniemail references:
-    - https://www.caniemail.com/features/css-border-individual-sides/
-      (border-left is spotty; the two-column-table strategy used here
-      is universally safe.)
+    - https://www.caniemail.com/features/css-border/
+      (covers border-left, border-right, and all side-specific properties;
+       the two-column-table strategy used here is universally safe.)
 
     Example:
     {[
