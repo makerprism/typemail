@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>typemail v0.1 - Comprehensive Test</title>
+  <!--[if mso]>
+  <style>
+    table { border-collapse: collapse; }
+    td, th, div, p, a, h1, h2, h3, h4, h5, h6 { font-family: Arial, sans-serif; }
+  </style>
+  <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px;">
+    <h1 style="color: #333; border-bottom: 3px solid #4f46e5; padding-bottom: 15px;">
+      typemail v0.1 - Cross-Client Test
+    </h1>
+    <p style="color: #666; font-size: 16px; line-height: 1.6;">
+      This email tests all <strong>10 typemail components</strong> to verify cross-client compatibility.
+      Please check that each component renders correctly in this email client.
+    </p>
+    
+    <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+      <p style="margin: 0; color: #856404; font-size: 14px;">
+        <strong>Testing Instructions:</strong><br/>
+        1. Check each component below renders correctly<br/>
+        2. View source to verify VML/HTML structure<br/>
+        3. Document results in CROSS_CLIENT_VERIFICATION.md
+      </p>
+    </div>
+
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Button Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that button renders cleanly with proper styling.
+    </p>
+    
+<!-- Button Component Golden Tests -->
+
+<!-- Basic button -->
+<div style="display:inline-block;"><!--[if mso]>
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
+                  xmlns:w="urn:schemas-microsoft-com:office:word"
+                  href="https://example.com"
+                  style="width:200px;height:44px;"
+                  arcsize="0%"
+                  strokeweight="0px"
+
+                  fillcolor="#4f46e5">
+        <w:anchorlock/>
+        <center>
+        <![endif]--><table cellpadding="0" cellspacing="0" border="0" style="margin:0;padding:0;">
+      <tr>
+        <td style="background-color:#4f46e5;border-radius:0px;display:inline-block;height:44px;width:200px;text-align:center;vertical-align:middle;">
+          <a href="https://example.com" style="background-color:#4f46e5;border-radius:0px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;font-weight:bold;line-height:44px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;">Click me</a>
+        </td>
+      </tr>
+    </table><!--[if mso]></center></v:roundrect><![endif]--></div>
+
+<!-- Button with border radius -->
+<!-- (would be generated with ~border_radius parameter) -->
+
+<!-- Button with gradient background -->
+<!-- (would use fallback color from gradient) -->
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Column Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that column renders cleanly with proper styling.
+    </p>
+    
+<!-- Column Component Golden Tests -->
+
+<!-- Basic column with width and vertical alignment -->
+<td width="200" valign="top"><table border="0" cellpadding="0" cellspacing="0" role="presentation"><h2>Column 1</h2><p>Content in column 1</p></table></td>
+
+<!-- Column with different width and middle alignment -->
+<td width="300" valign="middle"><table border="0" cellpadding="0" cellspacing="0" role="presentation"><h3>Column 2</h3><p>Content in column 2</p></table></td>
+
+<!-- Column with default width and alignment -->
+<td valign="middle"><table border="0" cellpadding="0" cellspacing="0" role="presentation"><h2>Column 3</h2><p>Auto-width column</p></table></td>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Divider Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that divider renders cleanly with proper styling.
+    </p>
+    
+<hr style="border: 0;border-top: 1px solid;border-color: #cccccc;height: 1px;margin: 0;width: 100%;"></hr>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Footer Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that footer renders cleanly with proper styling.
+    </p>
+    
+<!-- Footer Component Golden Tests -->
+
+<!-- Basic footer without background -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation"><tr><td>© 2024 Company Name</td></tr></table>
+
+<!-- Footer with background color -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation"><tr><td bgcolor="#1f2937">© 2024 Company Name. All rights reserved.</td></tr></table>
+
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Heading Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that heading renders cleanly with proper styling.
+    </p>
+    
+<!-- Heading Component Golden Tests -->
+
+<!-- H1: Basic heading -->
+<h1>Welcome to typemail!</h1>
+
+<!-- H2: With color -->
+<h2 color="#4f46e5">You&#39;re invited</h2>
+
+<!-- H3: With brand color -->
+<h3 color="#312e81">Get started</h3>
+
+<!-- H4: With custom color -->
+<h4 color="#ff0000">Warning</h4>
+
+<!-- H5: Plain heading -->
+<h5>Subsection</h5>
+
+<!-- H6: Smallest heading -->
+<h6>Footer heading</h6>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Image Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that image renders cleanly with proper styling.
+    </p>
+    
+<!-- Image Component Golden Tests -->
+
+<!-- Basic image with dimensions -->
+<img width="200" height="50" src="https://example.com/logo.png" alt="Company Logo"></img>
+
+<!-- Image with dimensions and border radius -->
+<img style="border-radius: 8px;" width="400" height="300" src="https://example.com/photo.jpg" alt="Team photo"></img>
+
+<!-- Image with minimal attributes (no dimensions) -->
+<img src="/assets/icon.svg" alt="Settings icon"></img>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Paragraph Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that paragraph renders cleanly with proper styling.
+    </p>
+    
+<!-- Paragraph Component Golden Tests -->
+
+<!-- Basic paragraph -->
+<p>This is a paragraph of text.</p>
+
+<!-- Colored paragraph -->
+<p color="#6b7280">This is gray text.</p>
+
+<!-- Paragraph with brand color -->
+<p color="#4f46e5">Brand indigo text</p>
+
+<!-- Paragraph with custom color -->
+<p color="#ff0000">Red warning text</p>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Section Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that section renders cleanly with proper styling.
+    </p>
+    
+<!-- Section Component Golden Tests -->
+
+<!-- Basic section without styling -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td><h1>Section Title</h1><p>Section content</p></td></tr></table>
+
+<!-- Section with background color -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" bgcolor="#f3f4f6" style="background-color: #f3f4f6;"><tr><td style="padding: 16px;"><h2>Styled Section</h2><p>With padding and background</p></td></tr></table>
+
+<!-- Section with gradient background (with fallback) -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" bgcolor="#667eea" style="background: linear-gradient(to bottom, #667eea, #764ba2); background-color: #667eea;"><tr><td style="padding: 24px;"><h3>Gradient Section</h3><p>Modern clients see gradient</p></td></tr></table>
+
+<!-- Section with brand color background -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" bgcolor="#312e81" style="background-color: #312e81;"><tr><td style="padding: 20px;"><h4>Brand Background</h4><p>Using indigo-900</p></td></tr></table>
+
+<!-- Section with large padding -->
+<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" bgcolor="#ffffff" style="background-color: #ffffff;"><tr><td style="padding: 48px;"><h5>Large Padding</h5><p>48px padding all around</p></td></tr></table>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <h2 style="color: #4f46e5; margin-top: 40px; margin-bottom: 15px; font-size: 24px;">
+      Spacer Component
+    </h2>
+    <p style="color: #999; font-size: 14px; margin-bottom: 15px;">
+      Expected: Check that spacer renders cleanly with proper styling.
+    </p>
+    
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td style="height: 16px; line-height: 16px; font-size: 16px;"><span style="display: inline-block; height: 16px; width: 0;"></span></td></tr></table>
+    
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+    
+    <div style="margin-top: 50px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+      <h3 style="color: #333; margin-top: 0;">Test Summary</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Component</strong></td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #ddd;"><strong>Status</strong></td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Heading</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Paragraph</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #4f46e5; font-weight: bold;">Button (VML)</td>
+          <td style="padding: 8px 0; color: #4f46e5; font-weight: bold;">⬜ Check VML in source</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Column</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #4f46e5; font-weight: bold;">Section (Gradient)</td>
+          <td style="padding: 8px 0; color: #4f46e5; font-weight: bold;">⬜ Check fallback</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Image</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Divider</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Spacer</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;">Footer</td>
+          <td style="padding: 8px 0;">⬜ Pass / ❌ Fail</td>
+        </tr>
+      </table>
+    </div>
+    
+    <div style="margin-top: 30px; padding: 15px; background-color: #e7f3ff; border-radius: 8px; font-size: 12px; color: #666;">
+      <strong>Test Date:</strong> $(date +%Y-%m-%d)<br/>
+      <strong>Client:</strong> [Fill in after viewing]<br/>
+      <strong>Tester:</strong> [Your name]
+    </div>
+  </div>
+</body>
+</html>
