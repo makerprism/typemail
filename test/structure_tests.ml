@@ -26,6 +26,21 @@ let html_contains haystack needle =
   in
   search 0
 
+(* Count non-overlapping occurrences of a needle in a haystack. *)
+let count_occurrences haystack needle =
+  let needle_len = String.length needle in
+  let haystack_len = String.length haystack in
+  if needle_len = 0 then 0
+  else
+    let rec loop pos acc =
+      if pos + needle_len > haystack_len then acc
+      else if String.sub haystack pos needle_len = needle then
+        loop (pos + needle_len) (acc + 1)
+      else
+        loop (pos + 1) acc
+    in
+    loop 0 0
+
 (* Test 1: Button has VML comments *)
 let test_button_vml () =
   let button = Button.v
@@ -199,8 +214,6 @@ let test_gmail_limit () =
 
   assert_test "Gmail Limit: Small email within limit" (String.length small_html <= 1024 * 1024)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 (* Test 6: Heading and Paragraph emit inline style, not the obsolete
    HTML4 `color` attribute. Email clients ignore the `color` attribute
    on <h1>..<h6> and <p>. *)
@@ -359,8 +372,8 @@ let test_text_align_center () =
   assert_test "Text_align.to_css Center is \"center\"" (Text_align.to_css Text_align.Center = "center");
   assert_test "Text_align.to_css Left is \"left\"" (Text_align.to_css Text_align.Left = "left");
   assert_test "Text_align.to_css Right is \"right\"" (Text_align.to_css Text_align.Right = "right")
-=======
-(* Test 6: Footer string shortcut still renders as before *)
+
+(* Test 18: Footer string shortcut still renders as before *)
 let test_footer_string_shortcut () =
   let footer = Footer.v "© 2024 Example" in
   let html = Element.to_html (Footer.to_element footer) in
@@ -369,7 +382,7 @@ let test_footer_string_shortcut () =
   assert_test "Footer (string): td cell present" (html_contains html "<td");
   assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
 
-(* Test 7: Footer.of_children renders each child inside the footer cell *)
+(* Test 19: Footer.of_children renders each child inside the footer cell *)
 let test_footer_of_children () =
   let footer = Footer.of_children [
     Paragraph.to_element (Paragraph.v "line 1");
@@ -381,7 +394,7 @@ let test_footer_of_children () =
   assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2");
   assert_test "Footer (children): paragraph tags present" (html_contains html "<p")
 
-(* Test 8: Footer.make with ~children works and honors background *)
+(* Test 20: Footer.make with ~children works and honors background *)
 let test_footer_make_children () =
   let footer = Footer.make
     ~background:(Color.solid "#1f2937")
@@ -397,7 +410,7 @@ let test_footer_make_children () =
   assert_test "Footer (make ~children): child content rendered"
     (html_contains html "© 2024 Example")
 
-(* Test 9: Footer.make with no content and no children raises Invalid_argument *)
+(* Test 21: Footer.make with no content and no children raises Invalid_argument *)
 let test_footer_make_requires_body () =
   let raised =
     try
@@ -407,7 +420,7 @@ let test_footer_make_requires_body () =
   in
   assert_test "Footer (make): empty call raises Invalid_argument" raised
 
-(* Test 10: Footer.make prefers children over content when both are given *)
+(* Test 22: Footer.make prefers children over content when both are given *)
 let test_footer_make_children_wins () =
   let footer = Footer.make
     ~content:"ignored text"
@@ -417,24 +430,8 @@ let test_footer_make_children_wins () =
 
   assert_test "Footer (make): children win over content"
     (html_contains html "visible child" && not (html_contains html "ignored text"))
->>>>>>> 6c77c48 (feat: Footer supports rich children alongside the string shortcut)
-=======
-(* Count non-overlapping occurrences of a needle in a haystack. *)
-let count_occurrences haystack needle =
-  let needle_len = String.length needle in
-  let haystack_len = String.length haystack in
-  if needle_len = 0 then 0
-  else
-    let rec loop pos acc =
-      if pos + needle_len > haystack_len then acc
-      else if String.sub haystack pos needle_len = needle then
-        loop (pos + needle_len) (acc + 1)
-      else
-        loop (pos + 1) acc
-    in
-    loop 0 0
 
-(* Test 6: Callout with background + accent renders two <td>s with accent bgcolor on the first *)
+(* Test 23: Callout with background + accent renders two <td>s with accent bgcolor on the first *)
 let test_callout_background_and_accent () =
   let callout = Callout.v
     ~background:(Color.solid "#f3f0ff")
@@ -450,9 +447,18 @@ let test_callout_background_and_accent () =
   assert_test "Callout: accent cell is 4px wide"
     (html_contains html "width=\"4\"" && html_contains html "width: 4px");
   assert_test "Callout: background bgcolor on table"
-    (html_contains html "bgcolor=\"#f3f0ff\"")
+    (html_contains html "bgcolor=\"#f3f0ff\"");
+  (* Regression: Color.to_style already includes the `background-color: ` prefix,
+     so the call sites in Callout.to_element must not add another one. *)
+  assert_test "Callout: table style is non-doubled background-color"
+    (html_contains html "style=\"background-color: #f3f0ff;\"");
+  assert_test "Callout: accent cell style is non-doubled background-color"
+    (html_contains html
+       "style=\"width: 4px; background-color: #6b46c1; font-size: 0; line-height: 0;\"");
+  assert_test "Callout: no doubled background-color: prefix"
+    (not (html_contains html "background-color: background-color:"))
 
-(* Test 7: Callout with background only (no accent) renders a single <td> with background *)
+(* Test 24: Callout with background only (no accent) renders a single <td> with background *)
 let test_callout_background_only () =
   let callout = Callout.v
     ~background:(Color.solid "#eef2ff")
@@ -465,9 +471,33 @@ let test_callout_background_only () =
   assert_test "Callout (bg only): background bgcolor present"
     (html_contains html "bgcolor=\"#eef2ff\"");
   assert_test "Callout (bg only): no accent width attribute"
-    (not (html_contains html "width=\"4\""))
+    (not (html_contains html "width=\"4\""));
+  assert_test "Callout (bg only): table style is non-doubled background-color"
+    (html_contains html "style=\"background-color: #eef2ff;\"");
+  assert_test "Callout (bg only): no doubled background-color: prefix"
+    (not (html_contains html "background-color: background-color:"))
 
-(* Test 8: Callout with accent only (no background) renders accent cell but no table-level bgcolor *)
+(* Test 25: Callout with a gradient background preserves the gradient style
+   emitted by Color.to_style (no extra prefix wrapping). *)
+let test_callout_gradient_background () =
+  let callout = Callout.v
+    ~background:(Color.gradient
+      ~direction:"to bottom"
+      ~colors:["#faf5ff"; "#ede9fe"]
+      ~fallback:(Color.solid "#faf5ff"))
+    [Paragraph.to_element (Paragraph.v "Gradient callout")] in
+
+  let html = Element.to_html (Callout.to_element callout) in
+
+  assert_test "Callout (gradient): gradient style emitted verbatim"
+    (html_contains html
+       "style=\"background: linear-gradient(to bottom, #faf5ff, #ede9fe); background-color: #faf5ff;\"");
+  assert_test "Callout (gradient): fallback bgcolor present"
+    (html_contains html "bgcolor=\"#faf5ff\"");
+  assert_test "Callout (gradient): no doubled background-color: prefix"
+    (not (html_contains html "background-color: background-color:"))
+
+(* Test 26: Callout with accent only (no background) renders accent cell but no table-level bgcolor *)
 let test_callout_accent_only () =
   let callout = Callout.make
     ~accent:(Color.solid "#dc2626")
@@ -486,9 +516,14 @@ let test_callout_accent_only () =
   (* The only background-color in the output comes from the accent cell's inline
      style; the table itself must carry no background-color style. *)
   assert_test "Callout (accent only): table tag has no style attribute"
-    (not (html_contains html "<table style="))
+    (not (html_contains html "<table style="));
+  assert_test "Callout (accent only): accent cell style is non-doubled background-color"
+    (html_contains html
+       "style=\"width: 4px; background-color: #dc2626; font-size: 0; line-height: 0;\"");
+  assert_test "Callout (accent only): no doubled background-color: prefix"
+    (not (html_contains html "background-color: background-color:"))
 
-(* Test 9: Children render inside the content <td> *)
+(* Test 27: Children render inside the content <td> *)
 let test_callout_children_rendered () =
   let callout = Callout.v
     ~background:(Color.solid "#f5f5f5")
@@ -502,7 +537,7 @@ let test_callout_children_rendered () =
   assert_test "Callout: child paragraph <p> tag is rendered"
     (html_contains html "<p")
 
-(* Test 10: make () with neither background nor accent raises Invalid_argument *)
+(* Test 28: make () with neither background nor accent raises Invalid_argument *)
 let test_callout_requires_background_or_accent () =
   let raised =
     try
@@ -514,7 +549,6 @@ let test_callout_requires_background_or_accent () =
   in
   assert_test "Callout: make() with neither background nor accent raises Invalid_argument"
     raised
->>>>>>> c1b6e96 (feat: Callout component (tinted box with left-border accent))
 
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
@@ -532,8 +566,6 @@ let () =
   test_section_padding_axis_overrides_uniform ();
   test_section_padding_none ();
   test_gmail_limit ();
-<<<<<<< HEAD
-<<<<<<< HEAD
   test_color_uses_inline_style ();
   test_void_elements_self_close ();
   test_column_wraps_children_in_tr_td ();
@@ -551,28 +583,12 @@ let () =
   test_footer_make_children ();
   test_footer_make_requires_body ();
   test_footer_make_children_wins ();
-  test_callout_with_background_and_accent ();
-  test_callout_background_only ();
-  test_callout_accent_only ();
-  test_callout_make_requires_either ();
-=======
-  test_footer_string_shortcut ();
-  test_footer_of_children ();
-  test_footer_make_children ();
-  test_footer_make_requires_body ();
-  test_footer_make_children_wins ();
-  test_callout_with_background_and_accent ();
-  test_callout_background_only ();
-  test_callout_accent_only ();
-  test_callout_make_requires_either ();
->>>>>>> 6c77c48 (feat: Footer supports rich children alongside the string shortcut)
-=======
   test_callout_background_and_accent ();
   test_callout_background_only ();
+  test_callout_gradient_background ();
   test_callout_accent_only ();
   test_callout_children_rendered ();
   test_callout_requires_background_or_accent ();
->>>>>>> c1b6e96 (feat: Callout component (tinted box with left-border accent))
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;
@@ -581,94 +597,3 @@ let () =
     (Printf.printf "\n✅ All tests passed!\n"; exit 0)
   else
     (Printf.printf "\n❌ Some tests failed\n"; exit 1)
-
-(* Test: Footer string shortcut still renders as before *)
-let test_footer_string_shortcut () =
-  let footer = Footer.v "© 2024 Example" in
-  let html = Element.to_html (Footer.to_element footer) in
-  assert_test "Footer (string): table wrapper present" (html_contains html "<table");
-  assert_test "Footer (string): td cell present" (html_contains html "<td");
-  assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
-
-(* Test: Footer.of_children renders each child inside the footer cell *)
-let test_footer_of_children () =
-  let footer = Footer.of_children [
-    Paragraph.to_element (Paragraph.v "line 1");
-    Paragraph.to_element (Paragraph.v "line 2");
-  ] in
-  let html = Element.to_html (Footer.to_element footer) in
-  assert_test "Footer (children): first paragraph rendered" (html_contains html "line 1");
-  assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2")
-
-(* Test: Footer.make ~children renders rich footer *)
-let test_footer_make_children () =
-  let footer = Footer.make ~children:[
-    Paragraph.to_element (Paragraph.v "rich content");
-  ] () in
-  let html = Element.to_html (Footer.to_element footer) in
-  assert_test "Footer make ~children: children rendered" (html_contains html "rich content")
-
-(* Test: Footer.make () with neither body nor children raises Invalid_argument *)
-let test_footer_make_requires_body () =
-  let raised =
-    try
-      let _ = Footer.make () in
-      false
-    with Invalid_argument _ -> true
-  in
-  assert_test "Footer make () raises Invalid_argument" raised
-
-(* Test: Footer.make ~children ~content prefers children *)
-let test_footer_make_children_wins () =
-  let footer = Footer.make
-    ~content:"ignored"
-    ~children:[Paragraph.to_element (Paragraph.v "used")]
-    () in
-  let html = Element.to_html (Footer.to_element footer) in
-  assert_test "Footer make children win: 'used' rendered" (html_contains html "used");
-  assert_test "Footer make children win: 'ignored' NOT rendered" (not (html_contains html "ignored"))
-
-(* Test: Callout with background and accent renders two-column table *)
-let test_callout_with_background_and_accent () =
-  let callout = Callout.v
-    ~background:(Color.solid "#f3f0ff")
-    ~accent:(Color.solid "#6b46c1")
-    [ Paragraph.to_element (Paragraph.v "\"Quote\"") ]
-  in
-  let html = Element.to_html (Callout.to_element callout) in
-
-  assert_test "Callout (bg+accent): renders <table> wrapper" (html_contains html "<table");
-  assert_test "Callout (bg+accent): renders accent cell" (html_contains html "bgcolor=\"#6b46c1\"");
-  assert_test "Callout (bg+accent): content cell contains quote" (html_contains html "\"Quote\"")
-
-(* Test: Callout with background only renders single cell *)
-let test_callout_background_only () =
-  let callout = Callout.make
-    ~background:(Color.solid "#f3f0ff")
-    ~children:[ Paragraph.to_element (Paragraph.v "Tip") ]
-    () in
-  let html = Element.to_html (Callout.to_element callout) in
-
-  assert_test "Callout (bg only): renders <table> wrapper" (html_contains html "<table");
-  assert_test "Callout (bg only): no accent cell present" (not (html_contains html "accent"))
-
-(* Test: Callout with accent only renders accent cell without table bgcolor *)
-let test_callout_accent_only () =
-  let callout = Callout.make
-    ~accent:(Color.solid "#6b46c1")
-    ~children:[ Paragraph.to_element (Paragraph.v "Warning") ]
-    () in
-  let html = Element.to_html (Callout.to_element callout) in
-
-  assert_test "Callout (accent only): renders accent cell" (html_contains html "bgcolor=\"#6b46c1\"");
-  assert_test "Callout (accent only): no table bgcolor" (not (html_contains html "background-color: #"))
-
-(* Test: Callout.make with neither background nor accent raises Invalid_argument *)
-let test_callout_make_requires_either () =
-  let raised =
-    try
-      let _ = Callout.make ~children:[] () in
-      false
-    with Invalid_argument _ -> true
-  in
-  assert_test "Callout.make () raises Invalid_argument" raised
