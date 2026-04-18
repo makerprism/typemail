@@ -11,6 +11,7 @@
   footer
   heading
   html_builder
+  icon
   image
   paragraph
   render

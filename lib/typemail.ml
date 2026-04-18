@@ -9,6 +9,7 @@ module Button = Button
 module Column = Column
 module Section = Section
 module Image = Image
+module Icon = Icon
 module Divider = Divider
 module Spacer = Spacer
 module Footer = Footer
