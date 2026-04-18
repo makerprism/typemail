@@ -58,6 +58,14 @@ We are building on the shoulders of these projects. All are MIT-licensed, so we 
 | [Elm send-grid / Email.Html](https://github.com/MartinSStewart/send-grid) | MIT | The safe-tags allowlist design at the primitive HTML layer. Our `Typemail.Html` primitives start from this list. |
 | [caniemail.com](https://www.caniemail.com/) | — | The single source of truth for "does this CSS property work in this client." Every component's compatibility claim cites caniemail. |
 
+## Why not React Email?
+
+React Email has excellent ergonomics, but TypeScript allows `any` and `dangerouslySetInnerHTML` — one desperate engineer can break the cross-client guarantee for everyone. typemail's OCaml types make unsafe HTML unrepresentable, and the Phase 2 CLI works from any language.
+
+## Why not MJML/MRML?
+
+MJML's `<mj-raw>` is the single biggest source of cross-client bugs in MJML codebases. MRML faithfully ports this — typemail rejects it. We also surface Outlook constraints (button pixel dimensions, VML for shapes) in the type system, not in documentation you might miss.
+
 ## Getting started
 
 *Coming soon — the Phase 1 library is in design.*
