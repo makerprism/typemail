@@ -19,8 +19,8 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
       ~children:[
         Heading.to_element @@ Heading.h1 ~color:Color.Brand.white
           (Printf.sprintf "You're invited to %s" presence_name);
-        Paragraph.to_element @@ Paragraph.v ~color:Color.Brand.white
-          (Printf.sprintf "%s has invited you to collaborate." inviter_name);
+        Paragraph.to_element @@ Paragraph.make ~color:Color.Brand.white
+          ~content:(Printf.sprintf "%s has invited you to collaborate." inviter_name) ();
       ]
       () ;
 
@@ -31,8 +31,8 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
         Heading.to_element @@ Heading.h2 "Get started today";
         Paragraph.to_element @@ Paragraph.v
           "Join your team and start collaborating in real-time.";
-        Paragraph.v ~color:Color.Brand.gray_500
-          "Click the button below to accept your invitation.";
+        Paragraph.to_element @@ Paragraph.make ~color:Color.Brand.gray_500
+          ~content:"Click the button below to accept your invitation." ();
 
         (* Call-to-action button with VML for Outlook *)
         Button.to_element @@ Button.v
