@@ -5,7 +5,7 @@
     inconsistently and is rarely needed in transactional email.
 
     caniemail reference:
-    - https://www.caniemail.com/features/css-font-style/
+    - https://www.caniemail.com/features/css-font/
 *)
 
 type t =
