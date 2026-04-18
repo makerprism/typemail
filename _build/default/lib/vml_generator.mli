@@ -8,7 +8,7 @@
     not be exposed to end users.
 
     caniemail reference:
-    - https://www.caniemail.com/features/email-vml/
+    - https://www.caniemail.com/features/html-comments/
 *)
 
 (** Generate a bulletproof button with VML fallback for Outlook.

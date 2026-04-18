@@ -58,6 +58,13 @@ let escape_html str =
   done;
   Buffer.contents result
 
+(* HTML void elements — must self-close and never carry a closing tag.
+   DOCTYPE is XHTML 1.0 Transitional, so we emit `<tag ... />` form. *)
+let is_void_element = function
+  | "area" | "base" | "br" | "col" | "embed" | "hr" | "img" | "input"
+  | "link" | "meta" | "param" | "source" | "track" | "wbr" -> true
+  | _ -> false
+
 let rec to_html = function
   | Empty -> ""
   | Text content ->
@@ -73,11 +80,17 @@ let rec to_html = function
                   |> List.map (fun (k, v) ->
                       Printf.sprintf "%s=\"%s\"" k (escape_html v))
                   |> String.concat " " in
-      let children_html = List.map to_html children |> String.concat "" in
-      if attrs = "" then
-        Printf.sprintf "<%s>%s</%s>" tag children_html tag
+      if is_void_element tag then
+        if attrs = "" then
+          Printf.sprintf "<%s />" tag
+        else
+          Printf.sprintf "<%s %s />" tag attrs
       else
-        Printf.sprintf "<%s %s>%s</%s>" tag attrs children_html tag
+        let children_html = List.map to_html children |> String.concat "" in
+        if attrs = "" then
+          Printf.sprintf "<%s>%s</%s>" tag children_html tag
+        else
+          Printf.sprintf "<%s %s>%s</%s>" tag attrs children_html tag
 
 let rec size_in_bytes = function
   | Empty -> 0

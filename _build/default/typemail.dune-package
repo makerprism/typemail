@@ -6,6 +6,8 @@
   (META
    button.ml
    button.mli
+   callout.ml
+   callout.mli
    color.ml
    color.mli
    column.ml
@@ -15,24 +17,34 @@
    dune-package
    element.ml
    element.mli
+   font_size.ml
+   font_size.mli
+   font_style.ml
+   font_style.mli
    footer.ml
    footer.mli
    heading.ml
    heading.mli
    html_builder.ml
    html_builder.mli
+   icon.ml
+   icon.mli
    image.ml
    image.mli
    paragraph.ml
    paragraph.mli
    render.ml
    render.mli
+   row.ml
+   row.mli
    section.ml
    section.mli
    spacer.ml
    spacer.mli
    spacing.ml
    spacing.mli
+   text_align.ml
+   text_align.mli
    typemail.a
    typemail.cma
    typemail.cmi
@@ -48,6 +60,10 @@
    typemail__Button.cmt
    typemail__Button.cmti
    typemail__Button.cmx
+   typemail__Callout.cmi
+   typemail__Callout.cmt
+   typemail__Callout.cmti
+   typemail__Callout.cmx
    typemail__Color.cmi
    typemail__Color.cmt
    typemail__Color.cmti
@@ -64,6 +80,14 @@
    typemail__Element.cmt
    typemail__Element.cmti
    typemail__Element.cmx
+   typemail__Font_size.cmi
+   typemail__Font_size.cmt
+   typemail__Font_size.cmti
+   typemail__Font_size.cmx
+   typemail__Font_style.cmi
+   typemail__Font_style.cmt
+   typemail__Font_style.cmti
+   typemail__Font_style.cmx
    typemail__Footer.cmi
    typemail__Footer.cmt
    typemail__Footer.cmti
@@ -76,6 +100,10 @@
    typemail__Html_builder.cmt
    typemail__Html_builder.cmti
    typemail__Html_builder.cmx
+   typemail__Icon.cmi
+   typemail__Icon.cmt
+   typemail__Icon.cmti
+   typemail__Icon.cmx
    typemail__Image.cmi
    typemail__Image.cmt
    typemail__Image.cmti
@@ -88,6 +116,10 @@
    typemail__Render.cmt
    typemail__Render.cmti
    typemail__Render.cmx
+   typemail__Row.cmi
+   typemail__Row.cmt
+   typemail__Row.cmti
+   typemail__Row.cmx
    typemail__Section.cmi
    typemail__Section.cmt
    typemail__Section.cmti
@@ -100,6 +132,10 @@
    typemail__Spacing.cmt
    typemail__Spacing.cmti
    typemail__Spacing.cmx
+   typemail__Text_align.cmi
+   typemail__Text_align.cmt
+   typemail__Text_align.cmti
+   typemail__Text_align.cmx
    typemail__Vml_generator.cmi
    typemail__Vml_generator.cmt
    typemail__Vml_generator.cmti
@@ -131,6 +167,13 @@
       (visibility public)
       (source (path Button) (intf (path button.mli)) (impl (path button.ml))))
      (module
+      (obj_name typemail__Callout)
+      (visibility public)
+      (source
+       (path Callout)
+       (intf (path callout.mli))
+       (impl (path callout.ml))))
+     (module
       (obj_name typemail__Color)
       (visibility public)
       (source (path Color) (intf (path color.mli)) (impl (path color.ml))))
@@ -153,6 +196,20 @@
        (intf (path element.mli))
        (impl (path element.ml))))
      (module
+      (obj_name typemail__Font_size)
+      (visibility public)
+      (source
+       (path Font_size)
+       (intf (path font_size.mli))
+       (impl (path font_size.ml))))
+     (module
+      (obj_name typemail__Font_style)
+      (visibility public)
+      (source
+       (path Font_style)
+       (intf (path font_style.mli))
+       (impl (path font_style.ml))))
+     (module
       (obj_name typemail__Footer)
       (visibility public)
       (source (path Footer) (intf (path footer.mli)) (impl (path footer.ml))))
@@ -171,6 +228,10 @@
        (intf (path html_builder.mli))
        (impl (path html_builder.ml))))
      (module
+      (obj_name typemail__Icon)
+      (visibility public)
+      (source (path Icon) (intf (path icon.mli)) (impl (path icon.ml))))
+     (module
       (obj_name typemail__Image)
       (visibility public)
       (source (path Image) (intf (path image.mli)) (impl (path image.ml))))
@@ -185,6 +246,10 @@
       (obj_name typemail__Render)
       (visibility public)
       (source (path Render) (intf (path render.mli)) (impl (path render.ml))))
+     (module
+      (obj_name typemail__Row)
+      (visibility public)
+      (source (path Row) (intf (path row.mli)) (impl (path row.ml))))
      (module
       (obj_name typemail__Section)
       (visibility public)
@@ -203,6 +268,13 @@
        (path Spacing)
        (intf (path spacing.mli))
        (impl (path spacing.ml))))
+     (module
+      (obj_name typemail__Text_align)
+      (visibility public)
+      (source
+       (path Text_align)
+       (intf (path text_align.mli))
+       (impl (path text_align.ml))))
      (module
       (obj_name typemail)
       (visibility public)

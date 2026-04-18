@@ -10,7 +10,10 @@
     - This approach ensures consistent rendering across all major clients
 
     caniemail reference:
-    - https://www.caniemail.com/features/css-column-layout-properties/
+    - https://www.caniemail.com/features/html-table/
+      (HTML tables are the only reliable cross-client method for multi-column
+       layouts; CSS column properties have partial support and are unsafe for
+       Outlook compatibility.)
 
     Example:
     {[
@@ -42,5 +45,9 @@ val make :
   unit ->
   t
 
-(** Convert to Element.t for rendering *)
+(** Convert to Element.t for rendering.
+
+    @deprecated Use [Row.of_columns] when placing Columns in a layout;
+    direct use of [Column.to_element] in [Section] children produces
+    nested [<td>] which is invalid HTML. *)
 val to_element : t -> Element.t
