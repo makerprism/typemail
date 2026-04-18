@@ -1,0 +1,22 @@
+_build/
+*.install
+
+# OCaml build artifacts
+*.cmi
+*.cmo
+*.cmx
+*.cmt
+*.cmti
+*.cma
+*.cmxa
+*.cmxs
+*.o
+*.a
+*.so
+*.annot
+*.exe
+
+# Editor files
+.merlin
+.#*
+*~

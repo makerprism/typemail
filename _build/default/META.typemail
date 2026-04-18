@@ -1,6 +1,0 @@
-description = ""
-requires = ""
-archive(byte) = "typemail.cma"
-archive(native) = "typemail.cmxa"
-plugin(byte) = "typemail.cma"
-plugin(native) = "typemail.cmxs"

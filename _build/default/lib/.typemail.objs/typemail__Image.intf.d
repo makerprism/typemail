@@ -1,1 +1,0 @@
-lib/image.mli: Element
