@@ -1,3 +1,11 @@
 (test
  (name test)
- (libraries typemail))
+ (libraries typemail)
+ (action
+  (run ./test.exe)))
+
+(test
+ (name structure_tests)
+ (libraries typemail)
+ (action
+  (run ./structure_tests.exe)))
