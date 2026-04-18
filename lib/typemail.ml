@@ -2,6 +2,9 @@
 
 module Color = Color
 module Spacing = Spacing
+module Font_size = Font_size
+module Font_style = Font_style
+module Text_align = Text_align
 module Element = Element
 module Heading = Heading
 module Paragraph = Paragraph
