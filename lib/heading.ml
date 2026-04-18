@@ -33,7 +33,7 @@ let to_element heading =
   (* Use inline style, not the HTML4 `color` attribute. The `color` attribute
      on <h1>..<h6> is ignored by every major email client; inline
      style="color: ..." is universally supported.
-     See https://www.caniemail.com/features/css-color/ *)
+     See https://www.caniemail.com/features/css-background-color/ *)
   let attributes =
     match heading.color with
     | None -> []

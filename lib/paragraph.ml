@@ -15,7 +15,7 @@ let to_element paragraph =
   (* Use inline style, not the HTML4 `color` attribute. The `color` attribute
      on <p> is ignored by every major email client; inline style="color: ..."
      is universally supported.
-     See https://www.caniemail.com/features/css-color/ *)
+     See https://www.caniemail.com/features/css-background-color/ *)
   let attributes =
     match paragraph.color with
     | None -> []
