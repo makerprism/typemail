@@ -325,7 +325,7 @@ This plan tracks the implementation of typemail Phase 1 - an OCaml library for a
 
 **Completed**:
 - ✅ Phase 1: Foundation (9/9 tasks)
-- ✅ Security fixes (XSS prevention, UTF-8 correctness)
+- ✅ Security fixes (XSS prevention, double-escaping, UTF-8 correctness)
 - ✅ Project structure cleanup
 - ✅ Phase 2: Heading component (8/8 tasks)
 - ✅ Phase 2: Paragraph component (8/8 tasks)
@@ -338,21 +338,30 @@ This plan tracks the implementation of typemail Phase 1 - an OCaml library for a
 - ✅ Phase 2: Footer component (8/8 tasks)
 - ✅ Phase 4: Render module (Gmail limit checking, error handling)
 - ✅ Phase 5: Documentation (README getting started, examples)
+- ✅ Security hardening (URL validation, XSS prevention, OWASP review)
 
 **v0.1 Status**: ✅ READY FOR FEEDMANSION.COM INTEGRATION
 
 All components implemented and tested. Library provides:
 - 10 type-safe components with caniemail citations
 - Table-based layouts for Outlook compatibility
-- VML generator for bulletproof buttons
+- VML generator for bulletproof buttons (fixed double-escaping)
 - Gradient support with automatic fallbacks
-- Gmail 102KB limit checking
+- Gmail 102KB limit checking (runtime error)
 - XSS prevention via HTML escaping
+- URL validation (Image, Button block dangerous schemes)
 - Accessibility-aware (required alt, distinct headings)
+- typemail.ml module re-exports all submodules
+
+**Security**: ✅ OWASP-compliant
+- All text/attributes HTML-escaped
+- URL validation blocks javascript:, data:, vbscript:
+- Opaque types prevent raw HTML injection
+- No escape hatches in API
 
 **Remaining** (for future releases):
-- Comprehensive Alcotest suite (current tests are functional but basic)
-- Cross-client verification in Gmail, Outlook, Apple Mail
+- ⬜ Cross-client verification in Gmail, Outlook, Apple Mail (see CROSS_CLIENT_VERIFICATION.md)
+- ⬜ Comprehensive Alcotest suite (current tests are functional but basic)
 - Phase 2: CLI tool for non-OCaml backends
 - Performance benchmarks
 
