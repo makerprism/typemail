@@ -8,6 +8,11 @@
     Background colors and gradients are supported with automatic fallback
     handling - gradients will degrade to solid colors in Outlook Desktop.
 
+    ⚠️ Known limitation: In some Outlook versions, vertical padding is
+    uniform across all cells in the same row, adopting the largest value.
+    This Section component uses padding on table cells (not div/p), which
+    is required for cross-client compatibility.
+
     caniemail references:
     - https://www.caniemail.com/features/css-linear-gradient/
     - https://www.caniemail.com/features/css-padding/

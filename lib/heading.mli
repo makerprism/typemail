@@ -5,6 +5,10 @@
     at compile time - you cannot silently downgrade a Heading to a Text
     node (unlike MJML).
 
+    ⚠️ Known limitation: Some webmail clients (notably Orange 2021-08+)
+    override default h1/h2 styling with their own colors (h1→#fff,
+    h2→#354963). Consider this when designing color-critical headings.
+
     caniemail reference:
     - https://www.caniemail.com/features/html-h1-h6/
 
