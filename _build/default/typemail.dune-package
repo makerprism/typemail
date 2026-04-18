@@ -8,15 +8,27 @@
    button.mli
    color.ml
    color.mli
+   column.ml
+   column.mli
+   divider.ml
+   divider.mli
    dune-package
    element.ml
    element.mli
+   footer.ml
+   footer.mli
    heading.ml
    heading.mli
    html_builder.ml
    html_builder.mli
+   image.ml
+   image.mli
    paragraph.ml
    paragraph.mli
+   section.ml
+   section.mli
+   spacer.ml
+   spacer.mli
    spacing.ml
    spacing.mli
    typemail.a
@@ -34,10 +46,22 @@
    typemail__Color.cmt
    typemail__Color.cmti
    typemail__Color.cmx
+   typemail__Column.cmi
+   typemail__Column.cmt
+   typemail__Column.cmti
+   typemail__Column.cmx
+   typemail__Divider.cmi
+   typemail__Divider.cmt
+   typemail__Divider.cmti
+   typemail__Divider.cmx
    typemail__Element.cmi
    typemail__Element.cmt
    typemail__Element.cmti
    typemail__Element.cmx
+   typemail__Footer.cmi
+   typemail__Footer.cmt
+   typemail__Footer.cmti
+   typemail__Footer.cmx
    typemail__Heading.cmi
    typemail__Heading.cmt
    typemail__Heading.cmti
@@ -46,10 +70,22 @@
    typemail__Html_builder.cmt
    typemail__Html_builder.cmti
    typemail__Html_builder.cmx
+   typemail__Image.cmi
+   typemail__Image.cmt
+   typemail__Image.cmti
+   typemail__Image.cmx
    typemail__Paragraph.cmi
    typemail__Paragraph.cmt
    typemail__Paragraph.cmti
    typemail__Paragraph.cmx
+   typemail__Section.cmi
+   typemail__Section.cmt
+   typemail__Section.cmti
+   typemail__Section.cmx
+   typemail__Spacer.cmi
+   typemail__Spacer.cmt
+   typemail__Spacer.cmti
+   typemail__Spacer.cmx
    typemail__Spacing.cmi
    typemail__Spacing.cmt
    typemail__Spacing.cmti
@@ -89,12 +125,27 @@
       (visibility public)
       (source (path Color) (intf (path color.mli)) (impl (path color.ml))))
      (module
+      (obj_name typemail__Column)
+      (visibility public)
+      (source (path Column) (intf (path column.mli)) (impl (path column.ml))))
+     (module
+      (obj_name typemail__Divider)
+      (visibility public)
+      (source
+       (path Divider)
+       (intf (path divider.mli))
+       (impl (path divider.ml))))
+     (module
       (obj_name typemail__Element)
       (visibility public)
       (source
        (path Element)
        (intf (path element.mli))
        (impl (path element.ml))))
+     (module
+      (obj_name typemail__Footer)
+      (visibility public)
+      (source (path Footer) (intf (path footer.mli)) (impl (path footer.ml))))
      (module
       (obj_name typemail__Heading)
       (visibility public)
@@ -110,12 +161,27 @@
        (intf (path html_builder.mli))
        (impl (path html_builder.ml))))
      (module
+      (obj_name typemail__Image)
+      (visibility public)
+      (source (path Image) (intf (path image.mli)) (impl (path image.ml))))
+     (module
       (obj_name typemail__Paragraph)
       (visibility public)
       (source
        (path Paragraph)
        (intf (path paragraph.mli))
        (impl (path paragraph.ml))))
+     (module
+      (obj_name typemail__Section)
+      (visibility public)
+      (source
+       (path Section)
+       (intf (path section.mli))
+       (impl (path section.ml))))
+     (module
+      (obj_name typemail__Spacer)
+      (visibility public)
+      (source (path Spacer) (intf (path spacer.mli)) (impl (path spacer.ml))))
      (module
       (obj_name typemail__Spacing)
       (visibility public)

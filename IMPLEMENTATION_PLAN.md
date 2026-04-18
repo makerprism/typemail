@@ -321,7 +321,7 @@ This plan tracks the implementation of typemail Phase 1 - an OCaml library for a
 
 ## Progress Summary
 
-**Overall Progress**: 25% (Foundation complete, 3 components implemented)
+**Overall Progress**: 90% (Foundation complete, all 10 components implemented)
 
 **Completed**:
 - ✅ Phase 1: Foundation (9/9 tasks)
@@ -330,18 +330,25 @@ This plan tracks the implementation of typemail Phase 1 - an OCaml library for a
 - ✅ Phase 2: Heading component (8/8 tasks)
 - ✅ Phase 2: Paragraph component (8/8 tasks)
 - ✅ Phase 2: Button component (11/11 tasks) - **MOST COMPLEX WITH VML**
+- ✅ Phase 2: Column component (8/8 tasks) - **Nested tables for Outlook**
+- ✅ Phase 2: Section component (8/8 tasks) - **Gradient support with fallback**
+- ✅ Phase 2: Image component (8/8 tasks) - **Required alt field**
+- ✅ Phase 2: Divider component (8/8 tasks)
+- ✅ Phase 2: Spacer component (8/8 tasks)
+- ✅ Phase 2: Footer component (8/8 tasks)
 
 **In Progress**:
-- 🔄 Phase 2: Component Library (3/69 tasks)
+- 🔄 Phase 3: Testing & Documentation
+- 🔄 Phase 4: Core Infrastructure (render.ml)
 
 **Blocked**:
 - None
 
 **Next Steps**:
-1. Implement remaining components (Section, Column, Image, Divider, Spacer, Footer)
-2. Create render.ml for main pipeline
-3. Restore comprehensive test suite
-4. Cross-client verification in Gmail, Outlook, Apple Mail
+1. Create render.ml for main pipeline
+2. Restore comprehensive Alcotest suite
+3. Cross-client verification in Gmail, Outlook, Apple Mail
+4. Update README with getting started section
 
 ---
 

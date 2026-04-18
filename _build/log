@@ -1,4 +1,4 @@
-# dune test
+# dune exec ./test/test.exe
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/sabine/.cache/dune/db
@@ -13,30 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/sabine/.opam/okra/bin/ocamlc.opt -config > /tmp/dune_b10949_output
-$ (cd _build/default/test && ./test.exe)
-> Element test passed. HTML: Hello, world!
-> H1 test passed. HTML: <h1>Welcome to typemail!</h1>
-> H2 test passed. HTML: <h2 color="#4f46e5">You&#39;re invited</h2>
-> Paragraph test passed. HTML: <p>This is a paragraph of text.</p>
-> Colored paragraph test passed. HTML: <p color="#6b7280">This is gray text.</p>
-> Button test passed. HTML: <div style="display:inline-block;">&amp;lt;!--[if mso]&amp;gt;
->       &amp;lt;v:roundrect xmlns:v=&amp;quot;urn:schemas-microsoft-com:vml&amp;quot;
->                   xmlns:w=&amp;quot;urn:schemas-microsoft-com:office:word&amp;quot;
->                   href=&amp;quot;https://example.com&amp;quot;
->                   style=&amp;quot;width:200px;height:44px;&amp;quot;
->                   arcsize=&amp;quot;0%&amp;quot;
->                   strokeweight=&amp;quot;0px&amp;quot;
->                   
->                   fillcolor=&amp;quot;#4f46e5&amp;quot;&amp;gt;
->         &amp;lt;w:anchorlock/&amp;gt;
->         &amp;lt;center&amp;gt;
->         &amp;lt;![endif]--&amp;gt;&amp;lt;table cellpadding=&amp;quot;0&amp;quot; cellspacing=&amp;quot;0&amp;quot; border=&amp;quot;0&amp;quot; style=&amp;quot;margin:0;padding:0;&amp;quot;&amp;gt;
->       &amp;lt;tr&amp;gt;
->         &amp;lt;td style=&amp;quot;background-color:#4f46e5;border-radius:0px;display:inline-block;height:44px;width:200px;text-align:center;vertical-align:middle;&amp;quot;&amp;gt;
->           &amp;lt;a href=&amp;quot;https://example.com&amp;quot; style=&amp;quot;background-color:#4f46e5;border-radius:0px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;font-weight:bold;line-height:44px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;&amp;quot;&amp;gt;Click me&amp;lt;/a&amp;gt;
->         &amp;lt;/td&amp;gt;
->       &amp;lt;/tr&amp;gt;
->     &amp;lt;/table&amp;gt;&amp;lt;!--[if mso]&amp;gt;&amp;lt;/center&amp;gt;&amp;lt;/v:roundrect&amp;gt;&amp;lt;![endif]--&amp;gt;</div>
->
-> ✅ All tests passed!
+$ /home/sabine/.opam/okra/bin/ocamlc.opt -config > /tmp/dune_c99db3_output
