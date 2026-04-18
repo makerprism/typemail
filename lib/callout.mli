@@ -5,6 +5,11 @@
     supports a colored left-border accent implemented via a two-column
     table (so it works in Outlook, which ignores CSS `border-left`).
 
+    ⚠️ Known limitation: Border width is limited to 8px maximum in
+    Outlook 2007-2021 and AOL clients. The default 4px accent width is
+    safe across all clients. Borders are applied to table cells (not div/p)
+    because they are unreliable on block elements in some Outlook versions.
+
     caniemail references:
     - https://www.caniemail.com/features/css-border/
       (covers border-left, border-right, and all side-specific properties;
