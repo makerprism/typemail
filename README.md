@@ -8,6 +8,15 @@
 
 Pre-alpha. The API is being designed; nothing is stable yet. No opam release.
 
+## Design pillars
+
+- **React Email ergonomics, without the JS lock-in.** Compose emails from semantic components (`Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `List`) — not raw HTML.
+- **No escape hatches.** MJML's `<mj-raw>` is the single biggest source of cross-client bugs in MJML codebases. typemail has no equivalent. If a pattern isn't expressible, the right answer is to add a typed component, not to punch a hole.
+- **Types enforce cross-client safety.** A gradient's record type has a required `fallback: color` field. A button requires an explicit pixel width and height. Make illegal states unrepresentable.
+- **Proper semantic elements for accessibility.** Headings are `Heading`, paragraphs are `Paragraph`, lists are `List`. No single `Text` component used for everything (the MJML a11y gap).
+- **Truth source:** [caniemail.com](https://www.caniemail.com/). Every component's compatibility claim cites the entry in caniemail that backs it.
+- **Honest about platform limits.** Gmail strips media queries. Outlook ignores `linear-gradient`. The compiler warns when a rendered email exceeds Gmail's 102 KB clip threshold.
+
 ## Scope
 
 typemail **is**:
@@ -17,6 +26,14 @@ typemail **is**:
 - **A portable renderer.** The OCaml library emits cross-client HTML (table-layout, VML fallbacks for Outlook, solid-color fallbacks before gradients, explicit pixel dimensions). The Phase 2 CLI will emit the same HTML from a text input, so consumers in any language can shell out.
 - **Accessibility-aware.** `Heading level:[`H1 | `H2 | …]` and `Paragraph` are distinct components so screen readers can distinguish structure. Images require `alt`. Unlike MJML, `Heading` is never silently downgraded to a `Text` node.
 - **Opinionated.** Every component cites the [caniemail.com](https://www.caniemail.com/) entries it relies on. When Gmail changes something, we know which components to re-verify.
+
+## Phases
+
+**Phase 1 — OCaml library.** The typed DSL + HTML renderer as an OCaml library, consumable via dune + opam. This is the reference implementation. Target: drop in to an OCaml backend and replace a hand-rolled `email_service.ml`.
+
+**Phase 2 — CLI.** A single static binary that reads a textual form of the DSL (likely an `.mail` file plus JSON props) and emits HTML. Any language can shell out. Modeled on MJML's CLI ergonomics, not its semantics.
+
+**Phase 3 — host-language bindings.** Thin Python / Ruby / JS wrappers that shell out to the CLI. Optional — most users will be happy calling the CLI directly from a Makefile or build step.
 
 typemail **is not**:
 
