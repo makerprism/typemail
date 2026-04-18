@@ -11,6 +11,7 @@ module Paragraph = Paragraph
 module Button = Button
 module Column = Column
 module Section = Section
+module Callout = Callout
 module Image = Image
 module Icon = Icon
 module Divider = Divider
