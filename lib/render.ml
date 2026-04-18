@@ -40,16 +40,14 @@ let render_email element =
       </o:OfficeDocumentSettings>
     </xml>
   </noscript>
-  <
-![endif]-->
+  <![endif]-->
   <title>Email</title>
   <!--[if mso]>
   <style>
     table { border-collapse: collapse; }
     td, th, div, p, a, h1, h2, h3, h4, h5, h6 { font-family: Arial, sans-serif; }
   </style>
-  <
-![endif]-->
+  <![endif]-->
 </head>
 <body style="margin: 0; padding: 0; word-spacing: normal; background-color: #ffffff;">
 %s

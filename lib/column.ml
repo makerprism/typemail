@@ -22,7 +22,21 @@ let to_element column =
     | Some w -> ("width", string_of_int w) :: td_attributes
   in
 
-  (* Wrap in table for Outlook compatibility *)
+  (* Wrap children in <tr><td> so block elements like <h1>, <p>, <img>
+     are not direct children of <table> (which is invalid HTML and
+     Outlook drops the orphaned nodes). *)
+  let inner_td =
+    Element.Private.make @@ Element.Private.builder
+      ~tag:"td"
+      ~attributes:[]
+      ~children:column.children
+  in
+  let inner_tr =
+    Element.Private.make @@ Element.Private.builder
+      ~tag:"tr"
+      ~attributes:[]
+      ~children:[inner_td]
+  in
   let table = Element.Private.make @@ Element.Private.builder
     ~tag:"table"
     ~attributes:[
@@ -31,7 +45,7 @@ let to_element column =
       "cellspacing", "0";
       "role", "presentation";
     ]
-    ~children:column.children
+    ~children:[inner_tr]
   in
 
   Element.Private.make @@ Element.Private.builder
