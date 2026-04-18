@@ -43,7 +43,7 @@ let to_element callout =
     | None -> base_table_attributes
     | Some color ->
         ("bgcolor", Color.(color |> fallback |> to_css))
-        :: ("style", "background-color: " ^ Color.to_style color ^ ";")
+        :: ("style", Color.to_style color)
         :: base_table_attributes
   in
 
@@ -72,7 +72,7 @@ let to_element callout =
               "bgcolor", accent_fallback;
               "style",
               Printf.sprintf
-                "width: %dpx; background-color: %s; font-size: 0; line-height: 0;"
+                "width: %dpx; %s font-size: 0; line-height: 0;"
                 accent_width_px accent_css;
             ]
             (* Non-breaking space keeps the cell from collapsing in
