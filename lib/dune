@@ -8,6 +8,8 @@
   column
   divider
   element
+  font_size
+  font_style
   footer
   heading
   html_builder
@@ -18,4 +20,5 @@
   section
   spacing
   spacer
+  text_align
   vml_generator))

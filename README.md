@@ -97,10 +97,16 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
         ~fallback:(Color.solid "#312e81"))
       ~padding:(Spacing.Spacing.px32)
       ~children:[
-        Heading.to_element @@ Heading.h1 ~color:Color.Brand.white
+        Heading.to_element @@ Heading.h1
+          ~color:Color.Brand.white
+          ~text_align:Text_align.Center
           (Printf.sprintf "You're invited to %s" presence_name);
-        Paragraph.to_element @@ Paragraph.v ~color:Color.Brand.white
-          (Printf.sprintf "%s invited you to collaborate." inviter_name);
+        Paragraph.to_element @@ Paragraph.make
+          ~color:Color.Brand.white
+          ~font_size:Font_size.large
+          ~text_align:Text_align.Center
+          ~content:(Printf.sprintf "%s invited you to collaborate." inviter_name)
+          ();
       ]
       () ;
 

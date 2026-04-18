@@ -222,6 +222,99 @@ let test_conditional_comments_are_single_line () =
     assert_test "render_email: no split `<\\n![endif]-->`"
       (not (html_contains html "<\n![endif]-->"))
 
+(* Test 10: Paragraph.v emits no style attribute *)
+let test_paragraph_v_no_style () =
+  let p = Paragraph.v "Plain text." in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph.v: renders <p> tag" (html_contains html "<p");
+  assert_test "Paragraph.v: no style attribute present" (not (html_contains html "style="));
+  assert_test "Paragraph.v: content preserved" (html_contains html "Plain text.")
+
+(* Test 11: Paragraph.make with color only *)
+let test_paragraph_color_only () =
+  let p = Paragraph.make
+    ~color:(Color.solid "#ff0000")
+    ~content:"Red text."
+    () in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph color-only: style contains color" (html_contains html "style=\"color: #ff0000;\"");
+  assert_test "Paragraph color-only: no font-size" (not (html_contains html "font-size"));
+  assert_test "Paragraph color-only: no font-style" (not (html_contains html "font-style"));
+  assert_test "Paragraph color-only: no text-align" (not (html_contains html "text-align"));
+  assert_test "Paragraph color-only: no legacy color= attribute" (not (html_contains html "color=\""))
+
+(* Test 12: Paragraph.make with font_size only *)
+let test_paragraph_font_size_only () =
+  let p = Paragraph.make
+    ~font_size:Font_size.small
+    ~content:"Small text."
+    () in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph font_size-only: style contains font-size" (html_contains html "style=\"font-size: 13px;\"");
+  assert_test "Paragraph font_size-only: no color" (not (html_contains html "color:"))
+
+(* Test 13: Paragraph.make with all four fields combined *)
+let test_paragraph_all_fields () =
+  let p = Paragraph.make
+    ~color:(Color.solid "#333333")
+    ~font_size:Font_size.large
+    ~font_style:Font_style.Italic
+    ~text_align:Text_align.Center
+    ~content:"Styled."
+    () in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph all-fields: single style attribute" (html_contains html "style=\"color: #333333; font-size: 20px; font-style: italic; text-align: center;\"");
+  (* Only one style= occurrence *)
+  let first = String.index html '"' in
+  let rest = String.sub html (first + 1) (String.length html - first - 1) in
+  let second_style = html_contains rest "style=" in
+  assert_test "Paragraph all-fields: exactly one style attribute" (not second_style)
+
+(* Test 14: Heading.make with font_size *)
+let test_heading_font_size () =
+  let h = Heading.make
+    ~level:Heading.H2
+    ~font_size:Font_size.xlarge
+    ~content:"Hero heading"
+    () in
+  let html = Element.to_html (Heading.to_element h) in
+
+  assert_test "Heading.make font_size: emits h2 tag" (html_contains html "<h2");
+  assert_test "Heading.make font_size: style contains font-size" (html_contains html "style=\"font-size: 24px;\"")
+
+(* Test 15: Heading.h1 ~color backward-compat (uses the same make path) *)
+let test_heading_h1_color_backward_compat () =
+  let h = Heading.h1 ~color:Color.Brand.white "Welcome" in
+  let html = Element.to_html (Heading.to_element h) in
+
+  assert_test "Heading.h1 ~color: emits h1 tag" (html_contains html "<h1");
+  assert_test "Heading.h1 ~color: style contains color" (html_contains html "style=\"color: #ffffff;\"");
+  assert_test "Heading.h1 ~color: no legacy color= attribute" (not (html_contains html "color=\""))
+
+(* Test 16: Font_size.of_px boundary behavior *)
+let test_font_size_boundaries () =
+  assert_test "Font_size.of_px 8: Some (at lower bound)" (Font_size.of_px 8 <> None);
+  assert_test "Font_size.of_px 7: None (below lower bound)" (Font_size.of_px 7 = None);
+  assert_test "Font_size.of_px 72: Some (at upper bound)" (Font_size.of_px 72 <> None);
+  assert_test "Font_size.of_px 73: None (above upper bound)" (Font_size.of_px 73 = None)
+
+(* Test 17: Text_align.Center renders correctly *)
+let test_text_align_center () =
+  let p = Paragraph.make
+    ~text_align:Text_align.Center
+    ~content:"Centered"
+    () in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Text_align.Center: renders text-align: center" (html_contains html "text-align: center;");
+  assert_test "Text_align.to_css Center is \"center\"" (Text_align.to_css Text_align.Center = "center");
+  assert_test "Text_align.to_css Left is \"left\"" (Text_align.to_css Text_align.Left = "left");
+  assert_test "Text_align.to_css Right is \"right\"" (Text_align.to_css Text_align.Right = "right")
+
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
   test_button_vml ();
@@ -238,6 +331,14 @@ let () =
   test_void_elements_self_close ();
   test_column_wraps_children_in_tr_td ();
   test_conditional_comments_are_single_line ();
+  test_paragraph_v_no_style ();
+  test_paragraph_color_only ();
+  test_paragraph_font_size_only ();
+  test_paragraph_all_fields ();
+  test_heading_font_size ();
+  test_heading_h1_color_backward_compat ();
+  test_font_size_boundaries ();
+  test_text_align_center ();
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;
