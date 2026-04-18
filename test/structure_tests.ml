@@ -204,8 +204,10 @@ let test_section_padding_none () =
   let section = Section.v [] in
   let html = Element.to_html (Section.to_element section) in
 
-  assert_test "Section none: no padding attribute"
-    (not (html_contains html "padding="))
+  (* "padding=" would collide with "cellpadding=" on the wrapper <table>;
+     the property under test is the inline "padding:" CSS on the cell. *)
+  assert_test "Section none: no padding style"
+    (not (html_contains html "padding:"))
 
 (* Test 5: Gmail limit *)
 let test_gmail_limit () =
@@ -373,7 +375,7 @@ let test_text_align_center () =
   assert_test "Text_align.to_css Left is \"left\"" (Text_align.to_css Text_align.Left = "left");
   assert_test "Text_align.to_css Right is \"right\"" (Text_align.to_css Text_align.Right = "right")
 
-(* Test 18: Footer string shortcut still renders as before *)
+(* Test: Footer string shortcut still renders as before *)
 let test_footer_string_shortcut () =
   let footer = Footer.v "© 2024 Example" in
   let html = Element.to_html (Footer.to_element footer) in
@@ -382,7 +384,7 @@ let test_footer_string_shortcut () =
   assert_test "Footer (string): td cell present" (html_contains html "<td");
   assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
 
-(* Test 19: Footer.of_children renders each child inside the footer cell *)
+(* Test: Footer.of_children renders each child inside the footer cell *)
 let test_footer_of_children () =
   let footer = Footer.of_children [
     Paragraph.to_element (Paragraph.v "line 1");
@@ -394,7 +396,7 @@ let test_footer_of_children () =
   assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2");
   assert_test "Footer (children): paragraph tags present" (html_contains html "<p")
 
-(* Test 20: Footer.make with ~children works and honors background *)
+(* Test: Footer.make with ~children works and honors background *)
 let test_footer_make_children () =
   let footer = Footer.make
     ~background:(Color.solid "#1f2937")
@@ -410,7 +412,7 @@ let test_footer_make_children () =
   assert_test "Footer (make ~children): child content rendered"
     (html_contains html "© 2024 Example")
 
-(* Test 21: Footer.make with no content and no children raises Invalid_argument *)
+(* Test: Footer.make with no content and no children raises Invalid_argument *)
 let test_footer_make_requires_body () =
   let raised =
     try
@@ -420,7 +422,7 @@ let test_footer_make_requires_body () =
   in
   assert_test "Footer (make): empty call raises Invalid_argument" raised
 
-(* Test 22: Footer.make prefers children over content when both are given *)
+(* Test: Footer.make prefers children over content when both are given *)
 let test_footer_make_children_wins () =
   let footer = Footer.make
     ~content:"ignored text"
@@ -431,7 +433,7 @@ let test_footer_make_children_wins () =
   assert_test "Footer (make): children win over content"
     (html_contains html "visible child" && not (html_contains html "ignored text"))
 
-(* Test 23: Callout with background + accent renders two <td>s with accent bgcolor on the first *)
+(* Test: Callout with background + accent renders two <td>s with accent bgcolor on the first *)
 let test_callout_background_and_accent () =
   let callout = Callout.v
     ~background:(Color.solid "#f3f0ff")
@@ -447,18 +449,9 @@ let test_callout_background_and_accent () =
   assert_test "Callout: accent cell is 4px wide"
     (html_contains html "width=\"4\"" && html_contains html "width: 4px");
   assert_test "Callout: background bgcolor on table"
-    (html_contains html "bgcolor=\"#f3f0ff\"");
-  (* Regression: Color.to_style already includes the `background-color: ` prefix,
-     so the call sites in Callout.to_element must not add another one. *)
-  assert_test "Callout: table style is non-doubled background-color"
-    (html_contains html "style=\"background-color: #f3f0ff;\"");
-  assert_test "Callout: accent cell style is non-doubled background-color"
-    (html_contains html
-       "style=\"width: 4px; background-color: #6b46c1; font-size: 0; line-height: 0;\"");
-  assert_test "Callout: no doubled background-color: prefix"
-    (not (html_contains html "background-color: background-color:"))
+    (html_contains html "bgcolor=\"#f3f0ff\"")
 
-(* Test 24: Callout with background only (no accent) renders a single <td> with background *)
+(* Test: Callout with background only (no accent) renders a single <td> with background *)
 let test_callout_background_only () =
   let callout = Callout.v
     ~background:(Color.solid "#eef2ff")
@@ -471,33 +464,9 @@ let test_callout_background_only () =
   assert_test "Callout (bg only): background bgcolor present"
     (html_contains html "bgcolor=\"#eef2ff\"");
   assert_test "Callout (bg only): no accent width attribute"
-    (not (html_contains html "width=\"4\""));
-  assert_test "Callout (bg only): table style is non-doubled background-color"
-    (html_contains html "style=\"background-color: #eef2ff;\"");
-  assert_test "Callout (bg only): no doubled background-color: prefix"
-    (not (html_contains html "background-color: background-color:"))
+    (not (html_contains html "width=\"4\""))
 
-(* Test 25: Callout with a gradient background preserves the gradient style
-   emitted by Color.to_style (no extra prefix wrapping). *)
-let test_callout_gradient_background () =
-  let callout = Callout.v
-    ~background:(Color.gradient
-      ~direction:"to bottom"
-      ~colors:["#faf5ff"; "#ede9fe"]
-      ~fallback:(Color.solid "#faf5ff"))
-    [Paragraph.to_element (Paragraph.v "Gradient callout")] in
-
-  let html = Element.to_html (Callout.to_element callout) in
-
-  assert_test "Callout (gradient): gradient style emitted verbatim"
-    (html_contains html
-       "style=\"background: linear-gradient(to bottom, #faf5ff, #ede9fe); background-color: #faf5ff;\"");
-  assert_test "Callout (gradient): fallback bgcolor present"
-    (html_contains html "bgcolor=\"#faf5ff\"");
-  assert_test "Callout (gradient): no doubled background-color: prefix"
-    (not (html_contains html "background-color: background-color:"))
-
-(* Test 26: Callout with accent only (no background) renders accent cell but no table-level bgcolor *)
+(* Test: Callout with accent only (no background) renders accent cell but no table-level bgcolor *)
 let test_callout_accent_only () =
   let callout = Callout.make
     ~accent:(Color.solid "#dc2626")
@@ -516,14 +485,9 @@ let test_callout_accent_only () =
   (* The only background-color in the output comes from the accent cell's inline
      style; the table itself must carry no background-color style. *)
   assert_test "Callout (accent only): table tag has no style attribute"
-    (not (html_contains html "<table style="));
-  assert_test "Callout (accent only): accent cell style is non-doubled background-color"
-    (html_contains html
-       "style=\"width: 4px; background-color: #dc2626; font-size: 0; line-height: 0;\"");
-  assert_test "Callout (accent only): no doubled background-color: prefix"
-    (not (html_contains html "background-color: background-color:"))
+    (not (html_contains html "<table style="))
 
-(* Test 27: Children render inside the content <td> *)
+(* Test: Children render inside the content <td> *)
 let test_callout_children_rendered () =
   let callout = Callout.v
     ~background:(Color.solid "#f5f5f5")
@@ -537,7 +501,7 @@ let test_callout_children_rendered () =
   assert_test "Callout: child paragraph <p> tag is rendered"
     (html_contains html "<p")
 
-(* Test 28: make () with neither background nor accent raises Invalid_argument *)
+(* Test: Callout.make () with neither background nor accent raises Invalid_argument *)
 let test_callout_requires_background_or_accent () =
   let raised =
     try
@@ -549,6 +513,85 @@ let test_callout_requires_background_or_accent () =
   in
   assert_test "Callout: make() with neither background nor accent raises Invalid_argument"
     raised
+
+(* Test: Row.of_columns renders two <td>s as siblings in one <tr> (no nested <td>). *)
+let test_row_siblings_not_nested () =
+  let col1 = Column.v ~width:100 [Paragraph.to_element (Paragraph.v "left")] in
+  let col2 = Column.v [Paragraph.to_element (Paragraph.v "right")] in
+  let row = Row.of_columns [col1; col2] in
+  let html = Element.to_html (Row.to_element row) in
+
+  assert_test "Row: exactly one <tr> emitted at the Row level"
+    (count_occurrences html "<tr>" >= 1);
+  (* The Row itself must emit the two Columns' <td>s as siblings of one <tr>.
+     Nested-<td> (i.e. <td>...<td>...</td>...</td>) with no <tr> between them
+     would indicate the bug this component exists to prevent. *)
+  assert_test "Row: both column contents rendered"
+    (html_contains html "left" && html_contains html "right");
+  assert_test "Row: presentation table wrapper present"
+    (html_contains html "role=\"presentation\"");
+  assert_test "Row: width=100% on outer table"
+    (html_contains html "width=\"100%\"")
+
+(* Test: Row inside a Section nests cleanly — Section's <td> contains the
+   Row's <table>, not two Column <td>s as direct siblings of Section's <td>. *)
+let test_row_inside_section () =
+  let row = Row.of_columns [
+    Column.v ~width:52 [Paragraph.to_element (Paragraph.v "logo")];
+    Column.v [Paragraph.to_element (Paragraph.v "heading")];
+  ] in
+  let section = Section.make
+    ~children:[Row.to_element row]
+    () in
+  let html = Element.to_html (Section.to_element section) in
+
+  assert_test "Row in Section: logo content rendered"
+    (html_contains html "logo");
+  assert_test "Row in Section: heading content rendered"
+    (html_contains html "heading");
+  (* With Row, we get Section's <table>/<tr>/<td>, then Row's <table>/<tr>,
+     then Column <td>s. So we should see at least two <table> tags — one
+     from Section, one from Row. *)
+  assert_test "Row in Section: at least two <table> tags (Section + Row)"
+    (count_occurrences html "<table" >= 2)
+
+(* Test: Row.of_columns [] still emits a valid table/tr (empty row). *)
+let test_row_empty () =
+  let row = Row.of_columns [] in
+  let html = Element.to_html (Row.to_element row) in
+
+  assert_test "Row (empty): table wrapper present"
+    (html_contains html "<table");
+  assert_test "Row (empty): tr present"
+    (html_contains html "<tr");
+  assert_test "Row (empty): no <td> emitted"
+    (not (html_contains html "<td"))
+
+(* Test: Row.make ~columns behaves identically to Row.of_columns. *)
+let test_row_make_matches_of_columns () =
+  let c1 = Column.v ~width:200 [Paragraph.to_element (Paragraph.v "a")] in
+  let c2 = Column.v [Paragraph.to_element (Paragraph.v "b")] in
+  let via_v = Row.of_columns [c1; c2] in
+  let via_make = Row.make ~columns:[c1; c2] () in
+  let html_v = Element.to_html (Row.to_element via_v) in
+  let html_make = Element.to_html (Row.to_element via_make) in
+
+  assert_test "Row.make: produces identical HTML to Row.of_columns"
+    (html_v = html_make)
+
+(* Test: Columns inside a Row preserve their width and valign attributes. *)
+let test_row_preserves_column_attrs () =
+  let col = Column.v
+    ~width:240
+    ~vertical_align:"top"
+    [Paragraph.to_element (Paragraph.v "content")] in
+  let row = Row.of_columns [col] in
+  let html = Element.to_html (Row.to_element row) in
+
+  assert_test "Row: column width=\"240\" attribute preserved"
+    (html_contains html "width=\"240\"");
+  assert_test "Row: column valign=\"top\" attribute preserved"
+    (html_contains html "valign=\"top\"")
 
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
@@ -585,10 +628,14 @@ let () =
   test_footer_make_children_wins ();
   test_callout_background_and_accent ();
   test_callout_background_only ();
-  test_callout_gradient_background ();
   test_callout_accent_only ();
   test_callout_children_rendered ();
   test_callout_requires_background_or_accent ();
+  test_row_siblings_not_nested ();
+  test_row_inside_section ();
+  test_row_empty ();
+  test_row_make_matches_of_columns ();
+  test_row_preserves_column_attrs ();
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;

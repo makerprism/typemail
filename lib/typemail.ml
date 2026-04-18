@@ -10,6 +10,7 @@ module Heading = Heading
 module Paragraph = Paragraph
 module Button = Button
 module Column = Column
+module Row = Row
 module Section = Section
 module Callout = Callout
 module Image = Image

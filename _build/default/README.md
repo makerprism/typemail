@@ -10,7 +10,7 @@ Pre-alpha. The API is being designed; nothing is stable yet. No opam release.
 
 ## Design pillars
 
-- **React Email ergonomics, without the JS lock-in.** Compose emails from semantic components (`Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `Divider`, `Spacer`, `Footer`) — not raw HTML.
+- **React Email ergonomics, without the JS lock-in.** Compose emails from semantic components (`Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `Icon`, `Divider`, `Spacer`, `Footer`) — not raw HTML.
 - **No escape hatches.** MJML's `<mj-raw>` is the single biggest source of cross-client bugs in MJML codebases. typemail has no equivalent. If a pattern isn't expressible, the right answer is to add a typed component, not to punch a hole.
 - **Types enforce cross-client safety.** A gradient's record type has a required `fallback: color` field. A button requires an explicit pixel width and height. Make illegal states unrepresentable.
 - **Proper semantic elements for accessibility.** Headings are `Heading`, paragraphs are `Paragraph`, lists are `List`. No single `Text` component used for everything (the MJML a11y gap).
@@ -21,7 +21,7 @@ Pre-alpha. The API is being designed; nothing is stable yet. No opam release.
 
 typemail **is**:
 
-- **A typed DSL for email content.** Compose emails from semantic components: `Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `Divider`, `Spacer`, `Footer`. No raw HTML in the author-facing surface.
+- **A typed DSL for email content.** Compose emails from semantic components: `Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `Icon`, `Divider`, `Spacer`, `Footer`. No raw HTML in the author-facing surface.
 - **Cross-client safety by construction.** A gradient's record type has a required `fallback: color` field — you cannot represent a gradient without a fallback. A button requires an explicit pixel width and height (Outlook needs these inline). Illegal states are not representable.
 - **A portable renderer.** The OCaml library emits cross-client HTML (table-layout, VML fallbacks for Outlook, solid-color fallbacks before gradients, explicit pixel dimensions). The Phase 2 CLI will emit the same HTML from a text input, so consumers in any language can shell out.
 - **Accessibility-aware.** `Heading level:[`H1 | `H2 | …]` and `Paragraph` are distinct components so screen readers can distinguish structure. Images require `alt`. Unlike MJML, `Heading` is never silently downgraded to a `Text` node.
@@ -97,12 +97,27 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
         ~fallback:(Color.solid "#312e81"))
       ~padding:(Spacing.Spacing.px32)
       ~children:[
-        Heading.to_element @@ Heading.h1 ~color:Color.Brand.white
+        Heading.to_element @@ Heading.h1
+          ~color:Color.Brand.white
+          ~text_align:Text_align.Center
           (Printf.sprintf "You're invited to %s" presence_name);
-        Paragraph.to_element @@ Paragraph.v ~color:Color.Brand.white
-          (Printf.sprintf "%s invited you to collaborate." inviter_name);
+        Paragraph.to_element @@ Paragraph.make
+          ~color:Color.Brand.white
+          ~font_size:Font_size.large
+          ~text_align:Text_align.Center
+          ~content:(Printf.sprintf "%s invited you to collaborate." inviter_name)
+          ();
       ]
       () ;
+
+    (* Tinted callout with a left-border accent (quote / tip / warning) *)
+    Callout.to_element @@ Callout.v
+      ~background:(Color.solid "#f3f0ff")
+      ~accent:(Color.solid "#6b46c1")
+      [
+        Paragraph.to_element @@ Paragraph.v
+          "\"Looking forward to working with you.\"";
+      ];
 
     (* Call-to-action button with VML for Outlook *)
     Section.to_element @@ Section.make

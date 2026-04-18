@@ -10,9 +10,9 @@
     javascript:, data:, and vbscript: are rejected at construction time.
 
     caniemail references:
-    - https://www.caniemail.com/features/email-button-padding/
-    - https://www.caniemail.com/features/email-background-gradient/
-    - https://www.caniemail.com/features/email-vml/
+    - https://www.caniemail.com/features/css-padding/
+    - https://www.caniemail.com/features/css-linear-gradient/
+    - https://www.caniemail.com/features/html-comments/
 
     Example:
     {[
