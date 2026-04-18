@@ -110,6 +110,15 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
       ]
       () ;
 
+    (* Tinted callout with a left-border accent (quote / tip / warning) *)
+    Callout.to_element @@ Callout.v
+      ~background:(Color.solid "#f3f0ff")
+      ~accent:(Color.solid "#6b46c1")
+      [
+        Paragraph.to_element @@ Paragraph.v
+          "\"Looking forward to working with you.\"";
+      ];
+
     (* Call-to-action button with VML for Outlook *)
     Section.to_element @@ Section.make
       ~padding:(Spacing.Spacing.px24)

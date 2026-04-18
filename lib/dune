@@ -4,6 +4,7 @@
  (modules
   typemail
   button
+  callout
   color
   column
   divider
