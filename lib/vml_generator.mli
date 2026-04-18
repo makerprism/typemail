@@ -13,6 +13,9 @@
 
 (** Generate a bulletproof button with VML fallback for Outlook.
 
+    Returns a structured Element.t tree with VML conditional comments.
+    All user input (href, content) is properly escaped via Element.text.
+
     @param width_px Button width in pixels (required for Outlook)
     @param height_px Button height in pixels (required for Outlook)
     @param background Button background color (as CSS string)
@@ -20,7 +23,7 @@
     @param border_radius Optional border radius in pixels
     @param content Button text content
     @param href Button link URL
-    @return Html_builder.t with VML + fallback HTML
+    @return Element.t with VML + fallback HTML structure
 *)
 val bulletproof_button :
   width_px:int ->
@@ -30,4 +33,4 @@ val bulletproof_button :
   border_radius:int option ->
   content:string ->
   href:string ->
-  Html_builder.t
+  Element.t

@@ -43,6 +43,9 @@ module Private : sig
     children:t list ->
     builder
 
+  (** Create an HTML comment - for VML conditional comments *)
+  val comment : string -> t
+
   (** Merge attribute lists, later values override earlier ones *)
   val merge_attributes :
     (string * string) list ->

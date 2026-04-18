@@ -2,6 +2,7 @@
  (name typemail)
  (public_name typemail)
  (modules
+  typemail
   button
   color
   column

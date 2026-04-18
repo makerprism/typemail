@@ -8,6 +8,7 @@ type t =
       attributes: (string * string) list;
       children: t list;
     }
+  | Comment of string  (** HTML comment - for VML conditional comments *)
 
 let empty = Empty
 
@@ -25,6 +26,8 @@ module Private = struct
 
   let builder ~tag ~attributes ~children =
     {tag; attributes; children}
+
+  let comment content = Comment content
 
   let merge_attributes attrs1 attrs2 =
     (* Merge two attribute lists, with attrs2 taking precedence *)
@@ -60,6 +63,11 @@ let rec to_html = function
   | Text content ->
       (* Escape HTML entities in text content *)
       escape_html content
+  | Comment content ->
+      (* HTML comment - for VML conditional comments.
+         Content is NOT escaped because it's part of the HTML structure.
+         Only used internally by VML generator with controlled input. *)
+      Printf.sprintf "<!--%s-->" content
   | Element {tag; attributes; children} ->
       let attrs = attributes
                   |> List.map (fun (k, v) ->
@@ -88,6 +96,9 @@ let rec size_in_bytes = function
             else 4 in
           count_utf8_bytes str (i - 1) (acc + char_byte_count) in
       count_utf8_bytes content (String.length content - 1) 0
+  | Comment content ->
+      (* HTML comments: <!--content--> *)
+      String.length content + 7
   | Element {tag; attributes; children} ->
       let attr_size = List.fold_left (fun acc (k, v) ->
         acc + String.length k + String.length v + 4) 0 attributes in
