@@ -156,6 +156,7 @@ let test_gmail_limit () =
 
   assert_test "Gmail Limit: Small email within limit" (String.length small_html <= 1024 * 1024)
 
+<<<<<<< HEAD
 (* Test 6: Heading and Paragraph emit inline style, not the obsolete
    HTML4 `color` attribute. Email clients ignore the `color` attribute
    on <h1>..<h6> and <p>. *)
@@ -314,6 +315,65 @@ let test_text_align_center () =
   assert_test "Text_align.to_css Center is \"center\"" (Text_align.to_css Text_align.Center = "center");
   assert_test "Text_align.to_css Left is \"left\"" (Text_align.to_css Text_align.Left = "left");
   assert_test "Text_align.to_css Right is \"right\"" (Text_align.to_css Text_align.Right = "right")
+=======
+(* Test 6: Footer string shortcut still renders as before *)
+let test_footer_string_shortcut () =
+  let footer = Footer.v "© 2024 Example" in
+  let html = Element.to_html (Footer.to_element footer) in
+
+  assert_test "Footer (string): table wrapper present" (html_contains html "<table");
+  assert_test "Footer (string): td cell present" (html_contains html "<td");
+  assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
+
+(* Test 7: Footer.of_children renders each child inside the footer cell *)
+let test_footer_of_children () =
+  let footer = Footer.of_children [
+    Paragraph.to_element (Paragraph.v "line 1");
+    Paragraph.to_element (Paragraph.v "line 2");
+  ] in
+  let html = Element.to_html (Footer.to_element footer) in
+
+  assert_test "Footer (children): first paragraph rendered" (html_contains html "line 1");
+  assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2");
+  assert_test "Footer (children): paragraph tags present" (html_contains html "<p")
+
+(* Test 8: Footer.make with ~children works and honors background *)
+let test_footer_make_children () =
+  let footer = Footer.make
+    ~background:(Color.solid "#1f2937")
+    ~children:[
+      Paragraph.to_element (Paragraph.v "© 2024 Example");
+      Divider.to_element (Divider.v ());
+    ]
+    () in
+  let html = Element.to_html (Footer.to_element footer) in
+
+  assert_test "Footer (make ~children): background applied"
+    (html_contains html "bgcolor=\"#1f2937\"");
+  assert_test "Footer (make ~children): child content rendered"
+    (html_contains html "© 2024 Example")
+
+(* Test 9: Footer.make with no content and no children raises Invalid_argument *)
+let test_footer_make_requires_body () =
+  let raised =
+    try
+      let _ = Footer.make () in
+      false
+    with Invalid_argument _ -> true
+  in
+  assert_test "Footer (make): empty call raises Invalid_argument" raised
+
+(* Test 10: Footer.make prefers children over content when both are given *)
+let test_footer_make_children_wins () =
+  let footer = Footer.make
+    ~content:"ignored text"
+    ~children:[Paragraph.to_element (Paragraph.v "visible child")]
+    () in
+  let html = Element.to_html (Footer.to_element footer) in
+
+  assert_test "Footer (make): children win over content"
+    (html_contains html "visible child" && not (html_contains html "ignored text"))
+>>>>>>> 6c77c48 (feat: Footer supports rich children alongside the string shortcut)
 
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
@@ -327,6 +387,7 @@ let () =
   test_icon_content_escaped ();
   test_icon_gradient ();
   test_gmail_limit ();
+<<<<<<< HEAD
   test_color_uses_inline_style ();
   test_void_elements_self_close ();
   test_column_wraps_children_in_tr_td ();
@@ -339,6 +400,18 @@ let () =
   test_heading_h1_color_backward_compat ();
   test_font_size_boundaries ();
   test_text_align_center ();
+  test_footer_string_shortcut ();
+  test_footer_of_children ();
+  test_footer_make_children ();
+  test_footer_make_requires_body ();
+  test_footer_make_children_wins ();
+=======
+  test_footer_string_shortcut ();
+  test_footer_of_children ();
+  test_footer_make_children ();
+  test_footer_make_requires_body ();
+  test_footer_make_children_wins ();
+>>>>>>> 6c77c48 (feat: Footer supports rich children alongside the string shortcut)
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;
@@ -347,3 +420,49 @@ let () =
     (Printf.printf "\n✅ All tests passed!\n"; exit 0)
   else
     (Printf.printf "\n❌ Some tests failed\n"; exit 1)
+
+(* Test: Footer string shortcut still renders as before *)
+let test_footer_string_shortcut () =
+  let footer = Footer.v "© 2024 Example" in
+  let html = Element.to_html (Footer.to_element footer) in
+  assert_test "Footer (string): table wrapper present" (html_contains html "<table");
+  assert_test "Footer (string): td cell present" (html_contains html "<td");
+  assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
+
+(* Test: Footer.of_children renders each child inside the footer cell *)
+let test_footer_of_children () =
+  let footer = Footer.of_children [
+    Paragraph.to_element (Paragraph.v "line 1");
+    Paragraph.to_element (Paragraph.v "line 2");
+  ] in
+  let html = Element.to_html (Footer.to_element footer) in
+  assert_test "Footer (children): first paragraph rendered" (html_contains html "line 1");
+  assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2")
+
+(* Test: Footer.make ~children renders rich footer *)
+let test_footer_make_children () =
+  let footer = Footer.make ~children:[
+    Paragraph.to_element (Paragraph.v "rich content");
+  ] () in
+  let html = Element.to_html (Footer.to_element footer) in
+  assert_test "Footer make ~children: children rendered" (html_contains html "rich content")
+
+(* Test: Footer.make () with neither body nor children raises Invalid_argument *)
+let test_footer_make_requires_body () =
+  let raised =
+    try
+      let _ = Footer.make () in
+      false
+    with Invalid_argument _ -> true
+  in
+  assert_test "Footer make () raises Invalid_argument" raised
+
+(* Test: Footer.make ~children ~content prefers children *)
+let test_footer_make_children_wins () =
+  let footer = Footer.make
+    ~content:"ignored"
+    ~children:[Paragraph.to_element (Paragraph.v "used")]
+    () in
+  let html = Element.to_html (Footer.to_element footer) in
+  assert_test "Footer make children win: 'used' rendered" (html_contains html "used");
+  assert_test "Footer make children win: 'ignored' NOT rendered" (not (html_contains html "ignored"))
