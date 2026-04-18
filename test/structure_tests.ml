@@ -149,6 +149,49 @@ let test_icon_gradient () =
   assert_test "Icon (gradient): linear-gradient in CSS"
     (html_contains html "linear-gradient(135deg, #7c3aed, #6b46c1)")
 
+(* Test: Section padding uniform *)
+let test_section_padding_uniform () =
+  let section = Section.make
+    ~padding:(Spacing.of_px_exn 16)
+    ~children:[]
+    () in
+  let html = Element.to_html (Section.to_element section) in
+
+  assert_test "Section uniform: single padding value"
+    (html_contains html "padding: 16px;")
+
+(* Test: Section padding axes only *)
+let test_section_padding_axes () =
+  let section = Section.make
+    ~padding_x:(Spacing.of_px_exn 40)
+    ~padding_y:(Spacing.of_px_exn 32)
+    ~children:[]
+    () in
+  let html = Element.to_html (Section.to_element section) in
+
+  assert_test "Section axes: two-value padding shorthand"
+    (html_contains html "padding: 32px 40px;")
+
+(* Test: Section padding axis overrides uniform *)
+let test_section_padding_axis_overrides_uniform () =
+  let section = Section.make
+    ~padding:(Spacing.of_px_exn 16)
+    ~padding_x:(Spacing.of_px_exn 40)
+    ~children:[]
+    () in
+  let html = Element.to_html (Section.to_element section) in
+
+  assert_test "Section override: axis-specific wins"
+    (html_contains html "padding: 16px 40px;")
+
+(* Test: Section padding none *)
+let test_section_padding_none () =
+  let section = Section.v [] in
+  let html = Element.to_html (Section.to_element section) in
+
+  assert_test "Section none: no padding attribute"
+    (not (html_contains html "padding="))
+
 (* Test 5: Gmail limit *)
 let test_gmail_limit () =
   let small = Section.v [Heading.to_element (Heading.h2 "Small")] in
@@ -326,6 +369,10 @@ let () =
   test_icon_zero_size_raises ();
   test_icon_content_escaped ();
   test_icon_gradient ();
+  test_section_padding_uniform ();
+  test_section_padding_axes ();
+  test_section_padding_axis_overrides_uniform ();
+  test_section_padding_none ();
   test_gmail_limit ();
   test_color_uses_inline_style ();
   test_void_elements_self_close ();

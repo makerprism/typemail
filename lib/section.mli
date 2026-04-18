@@ -13,37 +13,53 @@
     This Section component uses padding on table cells (not div/p), which
     is required for cross-client compatibility.
 
+    Padding can be specified uniformly via [~padding], or per-axis via
+    [~padding_x] (left/right) and [~padding_y] (top/bottom). When both
+    the uniform and an axis-specific value are provided, the axis-specific
+    value wins for that axis.
+
     caniemail references:
     - https://www.caniemail.com/features/css-linear-gradient/
     - https://www.caniemail.com/features/css-padding/
 
     Example:
     {[
-      Section.v
+      Section.make
         ~background:(Color.solid "#f3f4f6")
-        ~padding:(Spacing.of_px_exn 16)
-        [Heading.h1 "Welcome"; Paragraph.v "Content here"]
+        ~padding_y:(Spacing.of_px_exn 32)
+        ~padding_x:(Spacing.of_px_exn 40)
+        ~children:[
+          Heading.to_element (Heading.h1 "Welcome");
+          Paragraph.to_element (Paragraph.v "Content here");
+        ]
+        ()
     ]}
 *)
 
 type t = private {
   background: Color.t option;
   padding: Spacing.t option;
+  padding_x: Spacing.t option;
+  padding_y: Spacing.t option;
   children: Element.t list;
 }
 
 (** Smart constructor for common case - no background or padding *)
 val v : Element.t list -> t
 
-(** Constructor with optional background and padding
+(** Constructor with optional background and padding.
 
     @param background Optional background color or gradient (with fallback)
-    @param padding Optional padding in pixels
+    @param padding Optional uniform padding on all four sides
+    @param padding_x Optional horizontal padding (left and right); overrides [padding] on the x-axis
+    @param padding_y Optional vertical padding (top and bottom); overrides [padding] on the y-axis
     @param children List of child elements
 *)
 val make :
   ?background:Color.t ->
   ?padding:Spacing.t ->
+  ?padding_x:Spacing.t ->
+  ?padding_y:Spacing.t ->
   children:Element.t list ->
   unit ->
   t

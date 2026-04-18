@@ -3,13 +3,36 @@
 type t = {
   background: Color.t option;
   padding: Spacing.t option;
+  padding_x: Spacing.t option;
+  padding_y: Spacing.t option;
   children: Element.t list;
 }
 
-let make ?background ?padding ~children () =
-  {background; padding; children}
+let make ?background ?padding ?padding_x ?padding_y ~children () =
+  {background; padding; padding_x; padding_y; children}
 
-let v children = {background = None; padding = None; children}
+let v children =
+  {background = None; padding = None; padding_x = None; padding_y = None; children}
+
+(* Axis-specific overrides (padding_x / padding_y) win over the uniform
+   padding shorthand for the axis they cover. When only the uniform
+   ~padding is set, emit the one-value CSS shorthand to preserve
+   existing output. *)
+let padding_style section =
+  match section.padding_x, section.padding_y, section.padding with
+  | None, None, None -> None
+  | None, None, Some p ->
+      Some ("padding: " ^ Spacing.to_css p ^ ";")
+  | _, _, _ ->
+      let y = match section.padding_y with
+        | Some v -> v
+        | None -> (match section.padding with Some v -> v | None -> Spacing.of_px_exn 0)
+      in
+      let x = match section.padding_x with
+        | Some v -> v
+        | None -> (match section.padding with Some v -> v | None -> Spacing.of_px_exn 0)
+      in
+      Some ("padding: " ^ Spacing.to_css y ^ " " ^ Spacing.to_css x ^ ";")
 
 let to_element section =
   (* Create table wrapper with presentation role *)
@@ -44,9 +67,9 @@ let to_element section =
   in
 
   (* Create table cell with padding *)
-  let td_attributes = match section.padding with
+  let td_attributes = match padding_style section with
     | None -> []
-    | Some padding -> ["style", "padding: " ^ Spacing.to_css padding ^ ";"]
+    | Some style -> ["style", style]
   in
 
   (* Create properly nested structure: table > tr > td > children *)
