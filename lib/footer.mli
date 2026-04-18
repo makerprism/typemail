@@ -8,8 +8,9 @@
     For more complex footers with multiple elements, compose them
     using other components and wrap in a container.
 
-    caniemail reference:
-    - https://www.caniemail.com/features/email-footer/
+    caniemail references:
+    - https://www.caniemail.com/features/css-text-align/
+    - https://www.caniemail.com/features/css-padding/
 
     Example:
     {[

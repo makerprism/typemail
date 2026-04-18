@@ -5,7 +5,7 @@
     of the line.
 
     caniemail reference:
-    - https://www.caniemail.com/features/email-hr/
+    - https://www.caniemail.com/features/html-hr/
 
     Example:
     {[

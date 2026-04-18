@@ -4,8 +4,10 @@
     can properly distinguish document structure. This is critical for
     accessibility - unlike MJML where `<mj-text>` is used for both.
 
-    caniemail reference:
-    - https://www.caniemail.com/features/email-text/
+    caniemail references:
+    - https://www.caniemail.com/features/css-text-align/
+    - https://www.caniemail.com/features/css-font-size/
+    - https://www.caniemail.com/features/css-font/
 
     Example:
     {[

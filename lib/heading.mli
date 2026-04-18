@@ -6,7 +6,7 @@
     node (unlike MJML).
 
     caniemail reference:
-    - https://www.caniemail.com/features/email-heading/
+    - https://www.caniemail.com/features/html-h1-h6/
 
     Example:
     {[

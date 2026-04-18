@@ -10,7 +10,7 @@
     - This approach ensures consistent rendering across all major clients
 
     caniemail reference:
-    - https://www.caniemail.com/features/email-multiple-columns/
+    - https://www.caniemail.com/features/css-column-layout-properties/
 
     Example:
     {[

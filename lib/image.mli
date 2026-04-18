@@ -7,8 +7,8 @@
     to prevent layout shift. Border radius is optional for rounded corners.
 
     caniemail references:
-    - https://www.caniemail.com/features/email-image-alt/
-    - https://www.caniemail.com/features/email-image-width/
+    - https://www.caniemail.com/features/html-img/
+    - https://www.caniemail.com/features/css-width/
 
     Example:
     {[

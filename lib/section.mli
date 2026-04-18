@@ -9,8 +9,8 @@
     handling - gradients will degrade to solid colors in Outlook Desktop.
 
     caniemail references:
-    - https://www.caniemail.com/features/email-background-gradient/
-    - https://www.caniemail.com/features/email-table-cell-padding/
+    - https://www.caniemail.com/features/css-linear-gradient/
+    - https://www.caniemail.com/features/css-padding/
 
     Example:
     {[
