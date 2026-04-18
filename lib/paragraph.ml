@@ -12,10 +12,14 @@ let v content = {content; color = None}
 
 let to_element paragraph =
   let tag = "p" in
+  (* Use inline style, not the HTML4 `color` attribute. The `color` attribute
+     on <p> is ignored by every major email client; inline style="color: ..."
+     is universally supported.
+     See https://www.caniemail.com/features/css-color/ *)
   let attributes =
     match paragraph.color with
     | None -> []
-    | Some color -> ["color", Color.to_css color]
+    | Some color -> ["style", Printf.sprintf "color: %s;" (Color.to_css color)]
   in
   let children = [Element.text paragraph.content] in
   Element.Private.make @@

@@ -85,6 +85,72 @@ let test_gmail_limit () =
 
   assert_test "Gmail Limit: Small email within limit" (String.length small_html <= 1024 * 1024)
 
+(* Test 6: Heading and Paragraph emit inline style, not the obsolete
+   HTML4 `color` attribute. Email clients ignore the `color` attribute
+   on <h1>..<h6> and <p>. *)
+let test_color_uses_inline_style () =
+  let h = Heading.h1 ~color:(Color.solid "#1a0933") "Hi" in
+  let h_html = Element.to_html (Heading.to_element h) in
+  assert_test "Heading: color uses inline style"
+    (html_contains h_html "style=\"color: #1a0933;\"");
+  assert_test "Heading: no legacy color= attribute"
+    (not (html_contains h_html "color=\"#1a0933\""));
+
+  let p = Paragraph.make ~color:(Color.solid "#6b7280") ~content:"Hi" () in
+  let p_html = Element.to_html (Paragraph.to_element p) in
+  assert_test "Paragraph: color uses inline style"
+    (html_contains p_html "style=\"color: #6b7280;\"");
+  assert_test "Paragraph: no legacy color= attribute"
+    (not (html_contains p_html "color=\"#6b7280\""))
+
+(* Test 7: Void elements self-close and have no closing tag. The DOCTYPE
+   declares XHTML 1.0 Transitional, which requires `<img />` / `<hr />`. *)
+let test_void_elements_self_close () =
+  let img = Image.v ~src:"https://example.com/x.png" ~alt:"X"
+      ~width_px:40 ~height_px:40 in
+  let img_html = Element.to_html (Image.to_element img) in
+  assert_test "Image: renders self-closing <img ... />"
+    (html_contains img_html "/>");
+  assert_test "Image: no invalid </img> closing tag"
+    (not (html_contains img_html "</img>"));
+
+  let div = Divider.v () in
+  let div_html = Element.to_html (Divider.to_element div) in
+  assert_test "Divider: renders self-closing <hr ... />"
+    (html_contains div_html "/>");
+  assert_test "Divider: no invalid </hr> closing tag"
+    (not (html_contains div_html "</hr>"))
+
+(* Test 8: Column's inner table wraps children in <tr><td> so block
+   elements are not direct children of <table> (invalid HTML that
+   Outlook drops). *)
+let test_column_wraps_children_in_tr_td () =
+  let col = Column.v [
+    Image.to_element (Image.v ~src:"https://example.com/x.png" ~alt:"X"
+                        ~width_px:40 ~height_px:40);
+    Heading.to_element (Heading.h1 "Hi");
+  ] in
+  let html = Element.to_html (Column.to_element col) in
+  assert_test "Column: inner table has <tr><td> wrapper"
+    (html_contains html "<tr><td>");
+  assert_test "Column: no naked <img> as direct table child"
+    (not (html_contains html "presentation\"><img"));
+  assert_test "Column: no naked <h1> as direct table child"
+    (not (html_contains html "presentation\"><h1"))
+
+(* Test 9: render_email conditional comments close cleanly on one line.
+   A stray newline between `<` and `![endif]-->` breaks the Outlook
+   downlevel-hidden conditional-comment contract. *)
+let test_conditional_comments_are_single_line () =
+  let body = Section.v [Heading.to_element (Heading.h1 "Hi")] in
+  match Render.render_email (Section.to_element body) with
+  | Error e -> assert_test (Printf.sprintf "render_email succeeds: %s" e) false
+  | Ok html ->
+    assert_test "render_email: <![endif]--> appears on one line"
+      (html_contains html "<![endif]-->");
+    assert_test "render_email: no split `<\\n![endif]-->`"
+      (not (html_contains html "<\n![endif]-->"))
+
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
   test_button_vml ();
@@ -92,6 +158,10 @@ let () =
   test_text_escaping ();
   test_required_attributes ();
   test_gmail_limit ();
+  test_color_uses_inline_style ();
+  test_void_elements_self_close ();
+  test_column_wraps_children_in_tr_td ();
+  test_conditional_comments_are_single_line ();
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;
