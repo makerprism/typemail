@@ -15,7 +15,7 @@ Pre-alpha. The API is being designed; nothing is stable yet. No opam release.
 - **Types enforce cross-client safety.** A gradient's record type has a required `fallback: color` field. A button requires an explicit pixel width and height. Make illegal states unrepresentable.
 - **Proper semantic elements for accessibility.** Headings are `Heading`, paragraphs are `Paragraph`, lists are `List`. No single `Text` component used for everything (the MJML a11y gap).
 - **Truth source:** [caniemail.com](https://www.caniemail.com/). Every component's compatibility claim cites the entry in caniemail that backs it.
-- **Honest about platform limits.** Gmail strips media queries. Outlook ignores `linear-gradient`. The compiler warns when a rendered email exceeds Gmail's 102 KB clip threshold.
+- **Honest about platform limits.** Gmail strips media queries. Outlook ignores `linear-gradient`. The renderer returns an error when a rendered email exceeds Gmail's 102 KB clip threshold.
 
 ## Scope
 

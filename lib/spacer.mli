@@ -7,6 +7,10 @@
     The implementation uses a table-based approach which works
     consistently across all email clients including Outlook.
 
+    caniemail references:
+    - https://www.caniemail.com/features/css-padding/
+    - https://www.caniemail.com/features/css-height/
+
     Example:
     {[
       let spacer = Spacer.v ~height:(Spacing.of_px_exn 32)
