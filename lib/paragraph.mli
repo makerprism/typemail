@@ -8,34 +8,75 @@
     are combined into a single inline [style] attribute at render time,
     which is the only cross-client reliable way to apply text styling.
 
+    Paragraphs support both plain text and rich inline formatting (bold,
+    italic, links) via the Inline module. Use [v] for plain text or
+    [of_inline] for rich content.
+
     caniemail references:
     - https://www.caniemail.com/features/css-text-align/
     - https://www.caniemail.com/features/css-font-size/
     - https://www.caniemail.com/features/css-font/
+    - https://www.caniemail.com/features/html-strong/ (100% supported)
+
+    Note: Inline formatting uses <em>, <u>, and <a> tags which are basic
+    HTML elements with universal email client support.
 
     Example:
     {[
+      (* Plain text paragraph *)
       Paragraph.v "This is a paragraph of text."
+
+      (* Styled paragraph *)
       Paragraph.make
         ~color:Color.Brand.gray_500
         ~font_size:Font_size.small
         ~content:"Fine print."
         ()
+
+      (* Rich text with inline formatting *)
+      Paragraph.of_inline @@ Inline.concat [
+        Inline.text "Welcome ";
+        Inline.bold "new user";
+        Inline.text "! ";
+        Inline.link ~href:"https://example.com" "Get started";
+      ]
     ]}
 *)
 
 type t = private {
-  content: string;
+  content: content;
   color: Color.t option;
   font_size: Font_size.t option;
   font_style: Font_style.t option;
   text_align: Text_align.t option;
 }
 
-(** Smart constructor for common case - no styling specified *)
+(** Content type - either plain text or rich inline formatting *)
+and content =
+  | Text of string
+  | Inline of Inline.t
+
+(** Smart constructor for common case - plain text, no styling specified *)
 val v : string -> t
 
-(** Constructor with optional styling fields *)
+(** Constructor for rich inline formatting with optional styling.
+    Use Inline.concat to combine multiple inline elements.
+
+    @param inline Rich inline content from the Inline module
+*)
+val of_inline :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?font_style:Font_style.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+
+(** Constructor with optional styling fields.
+    For plain text content. Use [of_inline] for rich text formatting.
+
+    @param content Plain text content
+*)
 val make :
   ?color:Color.t ->
   ?font_size:Font_size.t ->

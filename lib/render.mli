@@ -28,10 +28,26 @@ val render_html : Element.t -> (string, string) Result.t
     Includes doctype, HTML wrapper, and email-specific meta tags.
     Checks Gmail 102KB limit before returning.
 
+    {b Body background support:}
+    - Solid colors: Widely supported (~88% of clients)
+    - Gradients: Partial support (~60% of clients, not in Outlook Windows)
+    - For gradients, a bgcolor attribute with fallback color is added for Outlook
+
+    caniemail references:
+    - https://www.caniemail.com/features/html-body/ (body element support)
+    - https://www.caniemail.com/features/css-background-color/ (solid colors)
+    - https://www.caniemail.com/features/css-linear-gradient/ (gradients)
+
+    @param body_background Optional background color for the <body> element.
+                           Defaults to solid white (#ffffff).
+                           Gradients are supported with proper Outlook fallback.
     @param element The email body content
     @return Ok complete email HTML on success, Error message if limit exceeded
 *)
-val render_email : Element.t -> (string, string) Result.t
+val render_email :
+  ?body_background:Color.t ->
+  Element.t ->
+  (string, string) Result.t
 
 (** Gmail size limit in bytes (102KB) *)
 val gmail_limit_bytes : int

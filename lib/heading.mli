@@ -16,17 +16,27 @@
     All optional style fields (color, font_size, text_align) are combined
     into a single inline [style] attribute at render time.
 
+    Headings support both plain text and rich inline formatting (bold,
+    italic, links) via the Inline module. Use [h1], [h2], etc. for plain
+    text or [of_inline] for rich content.
+
     caniemail reference:
-    - https://www.caniemail.com/features/html-h1-h6/
+    - https://www.caniemail.com/features/html-h1-h6/ (100% supported)
+
+    Note: Inline formatting uses <strong>, <em>, <u>, and <a> tags which are
+    basic HTML elements with universal email client support. <strong> is
+    verified at 100% support on caniemail.
 
     Example:
     {[
+      (* Plain text heading *)
       Heading.h1 ~color:Color.Brand.white "You're invited"
-      Heading.make
-        ~level:H2
-        ~text_align:Text_align.Center
-        ~content:"Welcome!"
-        ()
+
+      (* Rich text heading with inline formatting *)
+      Heading.of_inline_h1 @@ Inline.concat [
+        Inline.text "Welcome ";
+        Inline.bold "home";
+      ]
     ]}
 *)
 
@@ -37,10 +47,15 @@ type t = private {
   color: Color.t option;
   font_size: Font_size.t option;
   text_align: Text_align.t option;
-  content: string;
+  content: content;
 }
 
-(** Smart constructors for each heading level.
+(** Content type - either plain text or rich inline formatting *)
+and content =
+  | Text of string
+  | Inline of Inline.t
+
+(** Smart constructors for each heading level with plain text.
 
     @param color Optional text color
     @param font_size Optional font size
@@ -84,7 +99,53 @@ val h6 :
   string ->
   t
 
-(** General constructor with explicit level *)
+(** Smart constructors for each heading level with rich inline formatting.
+
+    @param color Optional text color
+    @param font_size Optional font size
+    @param text_align Optional text alignment
+    @param inline Heading inline content from the Inline module
+*)
+val of_inline_h1 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+val of_inline_h2 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+val of_inline_h3 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+val of_inline_h4 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+val of_inline_h5 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+val of_inline_h6 :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  Inline.t ->
+  t
+
+(** General constructor with explicit level and plain text content.
+    For rich text formatting, use [of_inline] instead.
+*)
 val make :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
@@ -94,8 +155,22 @@ val make :
   unit ->
   t
 
+(** General constructor with explicit level and rich inline formatting.
+    For plain text content, use [make] instead.
+
+    @param level Heading level
+    @param inline Rich inline content from the Inline module
+*)
+val of_inline :
+  ?color:Color.t ->
+  ?font_size:Font_size.t ->
+  ?text_align:Text_align.t ->
+  level:level ->
+  Inline.t ->
+  t
+
 (** Convert to Element.t for rendering *)
 val to_element : t -> Element.t
 
-(** Get heading tag as string ("h1", "h2", etc.) *)
+(** Get heading tag as string (h1, h2, etc.) *)
 val tag : t -> string

@@ -13,6 +13,7 @@ Pre-alpha. The API is being designed; nothing is stable yet. No opam release.
 - **React Email ergonomics, without the JS lock-in.** Compose emails from semantic components (`Section`, `Column`, `Heading`, `Paragraph`, `Button`, `Image`, `Icon`, `Divider`, `Spacer`, `Footer`) — not raw HTML.
 - **No escape hatches.** MJML's `<mj-raw>` is the single biggest source of cross-client bugs in MJML codebases. typemail has no equivalent. If a pattern isn't expressible, the right answer is to add a typed component, not to punch a hole.
 - **Types enforce cross-client safety.** A gradient's record type has a required `fallback: color` field. A button requires an explicit pixel width and height. Make illegal states unrepresentable.
+- **Composable, not constrained.** The inline formatting API (`bold`, `italic`, `underline`, `link`) composes naturally: `bold (italic "text")` or `link ~href:(bold "CTA")`. Nesting is allowed where it makes sense (styled links, combined formatting) without artificial constraints.
 - **Proper semantic elements for accessibility.** Headings are `Heading`, paragraphs are `Paragraph`, lists are `List`. No single `Text` component used for everything (the MJML a11y gap).
 - **Truth source:** [caniemail.com](https://www.caniemail.com/). Every component's compatibility claim cites the entry in caniemail that backs it.
 - **Honest about platform limits.** Gmail strips media queries. Outlook ignores `linear-gradient`. The renderer returns an error when a rendered email exceeds Gmail's 102 KB clip threshold.

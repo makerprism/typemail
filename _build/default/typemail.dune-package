@@ -31,6 +31,8 @@
    icon.mli
    image.ml
    image.mli
+   inline.ml
+   inline.mli
    paragraph.ml
    paragraph.mli
    render.ml
@@ -108,6 +110,10 @@
    typemail__Image.cmt
    typemail__Image.cmti
    typemail__Image.cmx
+   typemail__Inline.cmi
+   typemail__Inline.cmt
+   typemail__Inline.cmti
+   typemail__Inline.cmx
    typemail__Paragraph.cmi
    typemail__Paragraph.cmt
    typemail__Paragraph.cmti
@@ -235,6 +241,10 @@
       (obj_name typemail__Image)
       (visibility public)
       (source (path Image) (intf (path image.mli)) (impl (path image.ml))))
+     (module
+      (obj_name typemail__Inline)
+      (visibility public)
+      (source (path Inline) (intf (path inline.mli)) (impl (path inline.ml))))
      (module
       (obj_name typemail__Paragraph)
       (visibility public)
