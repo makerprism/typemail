@@ -1,18 +1,29 @@
 (** Paragraph component for body text. *)
 
+type content =
+  | Text of string
+  | Rich of Inline.t list
+
 type t = {
-  content: string;
+  content: content;
   color: Color.t option;
   font_size: Font_size.t option;
   font_style: Font_style.t option;
   text_align: Text_align.t option;
 }
 
-let make ?color ?font_size ?font_style ?text_align ~content () =
-  {content; color; font_size; font_style; text_align}
+let make ?color ?font_size ?font_style ?text_align ?content ?children () =
+  match children, content with
+  | Some inlines, _ -> {content = Rich inlines; color; font_size; font_style; text_align}
+  | None, Some s -> {content = Text s; color; font_size; font_style; text_align}
+  | None, None ->
+      invalid_arg "Paragraph.make: at least one of ~content or ~children is required"
 
 let v content =
-  {content; color = None; font_size = None; font_style = None; text_align = None}
+  {content = Text content; color = None; font_size = None; font_style = None; text_align = None}
+
+let of_children ?color ?font_size ?font_style ?text_align children =
+  {content = Rich children; color; font_size; font_style; text_align}
 
 let style_attributes p =
   let parts =
@@ -34,6 +45,9 @@ let to_element paragraph =
      is universally supported.
      See https://www.caniemail.com/features/css-background-color/ *)
   let attributes = style_attributes paragraph in
-  let children = [Element.text paragraph.content] in
+  let children = match paragraph.content with
+    | Text s -> [Element.text s]
+    | Rich inlines -> List.map Inline.to_element inlines
+  in
   Element.Private.make @@
   Element.Private.builder ~tag ~attributes ~children

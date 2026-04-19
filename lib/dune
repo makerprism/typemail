@@ -16,6 +16,7 @@
   html_builder
   icon
   image
+  inline
   paragraph
   render
   row

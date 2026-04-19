@@ -593,6 +593,104 @@ let test_row_preserves_column_attrs () =
   assert_test "Row: column valign=\"top\" attribute preserved"
     (html_contains html "valign=\"top\"")
 
+(* Test 28: Inline.Text renders as plain text *)
+let test_inline_text () =
+  let text = Inline.Text.v "Plain text" in
+  let html = Element.to_html (Inline.to_element text) in
+
+  assert_test "Inline.Text: renders plain text" (html_contains html "Plain text");
+  assert_test "Inline.Text: no wrapping tag" (not (html_contains html "<"))
+
+(* Test 29: Inline.Bold renders as <strong> *)
+let test_inline_bold () =
+  let bold = Inline.Bold (Inline.Text.v "Bold text") in
+  let html = Element.to_html (Inline.to_element bold) in
+
+  assert_test "Inline.Bold: renders <strong> tag" (html_contains html "<strong>");
+  assert_test "Inline.Bold: content inside" (html_contains html "Bold text");
+  assert_test "Inline.Bold: closing tag" (html_contains html "</strong>")
+
+(* Test 30: Inline.Italic renders as <em> *)
+let test_inline_italic () =
+  let italic = Inline.Italic (Inline.Text.v "Italic text") in
+  let html = Element.to_html (Inline.to_element italic) in
+
+  assert_test "Inline.Italic: renders <em> tag" (html_contains html "<em>");
+  assert_test "Inline.Italic: content inside" (html_contains html "Italic text");
+  assert_test "Inline.Italic: closing tag" (html_contains html "</em>")
+
+(* Test 31: Inline.Link renders as <a> with href *)
+let test_inline_link () =
+  let link = Inline.link ~href:"https://example.com" (Inline.Text.v "Click here") in
+  let html = Element.to_html (Inline.to_element link) in
+
+  assert_test "Inline.Link: renders <a> tag" (html_contains html "<a");
+  assert_test "Inline.Link: href attribute present" (html_contains html "href=\"https://example.com\"");
+  assert_test "Inline.Link: link text inside" (html_contains html "Click here");
+  assert_test "Inline.Link: closing tag" (html_contains html "</a>")
+
+(* Test 32: Inline.Code renders as <code> with styling *)
+let test_inline_code () =
+  let code = Inline.code "const x = 42;" in
+  let html = Element.to_html (Inline.to_element code) in
+
+  assert_test "Inline.Code: renders <code> tag" (html_contains html "<code");
+  assert_test "Inline.Code: has background color" (html_contains html "background-color:");
+  assert_test "Inline.Code: code text escaped" (html_contains html "const x = 42;")
+
+(* Test 33: Inline.Span with color renders as <span> with style *)
+let test_inline_span_color () =
+  let span = Inline.span ~color:(Color.solid "#ff0000") (Inline.Text.v "Red text") in
+  let html = Element.to_html (Inline.to_element span) in
+
+  assert_test "Inline.Span: renders <span> tag" (html_contains html "<span");
+  assert_test "Inline.Span: has color style" (html_contains html "color: #ff0000;");
+  assert_test "Inline.Span: content inside" (html_contains html "Red text")
+
+(* Test 34: Paragraph with rich text children *)
+let test_paragraph_rich_text () =
+  let p = Paragraph.of_children [
+    Inline.Text.v "Join ";
+    Inline.Bold.v "Team";
+    Inline.Text.v " ";
+    Inline.(link ~href:"https://example.com" (v "now!"));
+  ] in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph rich text: renders <p> tag" (html_contains html "<p");
+  assert_test "Paragraph rich text: contains <strong>" (html_contains html "<strong>");
+  assert_test "Paragraph rich text: contains <a>" (html_contains html "<a");
+  assert_test "Paragraph rich text: contains link text" (html_contains html "now!");
+
+(* Test 35: Paragraph.make with children wins over content *)
+let test_paragraph_make_children_wins () =
+  let p = Paragraph.make
+    ~content:"Plain text"
+    ~children:[Inline.Text.v "Rich text"]
+    () in
+  let html = Element.to_html (Paragraph.to_element p) in
+
+  assert_test "Paragraph.make children wins: contains rich text" (html_contains html "Rich text");
+  assert_test "Paragraph.make children wins: no plain text" (not (html_contains html "Plain text"))
+
+(* Test 36: Paragraph.make requires content or children *)
+let test_paragraph_make_requires_content_or_children () =
+  let result = try
+    let _ = Paragraph.make () in
+    false
+  with Invalid_argument _ -> true in
+
+  assert_test "Paragraph.make: raises Invalid_argument when neither content nor children provided" result
+
+(* Test 37: Inline elements escape HTML *)
+let test_inline_escapes_html () =
+  let text = Inline.Text.v "<script>alert('xss')</script>" in
+  let html = Element.to_html (Inline.to_element text) in
+
+  assert_test "Inline escape: < escaped" (html_contains html "&lt;");
+  assert_test "Inline escape: > escaped" (html_contains html "&gt;");
+  assert_test "Inline escape: raw <script> NOT present" (not (html_contains html "<script>"))
+
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
   test_button_vml ();
@@ -636,6 +734,16 @@ let () =
   test_row_empty ();
   test_row_make_matches_of_columns ();
   test_row_preserves_column_attrs ();
+  test_inline_text ();
+  test_inline_bold ();
+  test_inline_italic ();
+  test_inline_link ();
+  test_inline_code ();
+  test_inline_span_color ();
+  test_paragraph_rich_text ();
+  test_paragraph_make_children_wins ();
+  test_paragraph_make_requires_content_or_children ();
+  test_inline_escapes_html ();
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;
