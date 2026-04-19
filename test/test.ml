@@ -1,5 +1,16 @@
 (* Basic tests to verify compilation *)
 
+(* Helper function to check if string contains substring *)
+let string_contains s substr =
+  let len = String.length s in
+  let sublen = String.length substr in
+  let rec aux pos =
+    if pos + sublen > len then false
+    else if String.sub s pos sublen = substr then true
+    else aux (pos + 1)
+  in
+  aux 0
+
 (* Open the Typemail module to access its submodules *)
 open Typemail
 
@@ -195,8 +206,58 @@ let () =
   let small_email = Section.to_element small_email_section in
   Printf.printf "Small email within Gmail limit: %b\n" (Render.within_gmail_limit (Element.to_html small_email));
 
-  (* Test Inline module *)
-  Printf.printf "\n=== Testing Inline module ===\n";
+  (* Test body_background parameter *)
+  let test_section = Section.v [
+    Heading.to_element (Heading.h2 "Background Test");
+    Paragraph.to_element (Paragraph.v "Testing body background colors.");
+  ] in
+  let test_email = Section.to_element test_section in
+
+  (* Test 1: Default white background *)
+  match Render.render_email test_email with
+  | Ok html ->
+    if string_contains html "#ffffff" then
+      Printf.printf "Default body background test passed.\n"
+    else
+      Printf.printf "Default body background test failed: missing default color\n"
+  | Error msg -> Printf.printf "Default body background test failed: %s\n" msg;
+
+  (* Test 2: Solid color background *)
+  match Render.render_email ~body_background:(Color.solid "#f3f4f6") test_email with
+  | Ok html ->
+    if string_contains html "#f3f4f6" then
+      Printf.printf "Solid body background test passed.\n"
+    else
+      Printf.printf "Solid body background test failed: missing color\n"
+  | Error msg -> Printf.printf "Solid body background test failed: %s\n" msg;
+
+  (* Test 3: Gradient background with fallback *)
+  let gradient_bg = Color.gradient
+    ~direction:"to bottom"
+    ~colors:["#667eea"; "#764ba2"]
+    ~fallback:(Color.solid "#667eea") in
+  match Render.render_email ~body_background:gradient_bg test_email with
+  | Ok html ->
+    if string_contains html "linear-gradient" &&
+       string_contains html "bgcolor=\"#667eea\"" then
+      Printf.printf "Gradient body background test passed.\n"
+    else
+      Printf.printf "Gradient body background test failed: missing gradient or bgcolor\n"
+  | Error msg -> Printf.printf "Gradient body background test failed: %s\n" msg;
+
+  (* Test 4: Nested gradient fallback *)
+  let nested_gradient = Color.gradient
+    ~direction:"to right"
+    ~colors:["#a18cd1"; "#fbc2eb"]
+    ~fallback:gradient_bg in
+  match Render.render_email ~body_background:nested_gradient test_email with
+  | Ok html ->
+    (* Should extract the solid fallback from the nested gradient *)
+    if string_contains html "bgcolor=\"#667eea\"" then
+      Printf.printf "Nested gradient fallback test passed.\n"
+    else
+      Printf.printf "Nested gradient fallback test failed: wrong bgcolor\n"
+  | Error msg -> Printf.printf "Nested gradient fallback test failed: %s\n" msg;
 
   (* Test inline text *)
   let inline_text = Inline.text "Hello world" in
@@ -204,26 +265,41 @@ let () =
   Printf.printf "Inline.text test passed. HTML: %s\n" inline_html;
 
   (* Test inline bold *)
-  let inline_bold = Inline.bold "Bold text" in
+  let inline_bold = Inline.bold (Inline.text "Bold text") in
   let inline_bold_html = Inline.to_html inline_bold in
   Printf.printf "Inline.bold test passed. HTML: %s\n" inline_bold_html;
 
   (* Test inline italic *)
-  let inline_italic = Inline.italic "Italic text" in
+  let inline_italic = Inline.italic (Inline.text "Italic text") in
   let inline_italic_html = Inline.to_html inline_italic in
   Printf.printf "Inline.italic test passed. HTML: %s\n" inline_italic_html;
 
+  (* Test inline underline *)
+  let inline_underline = Inline.underline (Inline.text "Underline text") in
+  let inline_underline_html = Inline.to_html inline_underline in
+  Printf.printf "Inline.underline test passed. HTML: %s\n" inline_underline_html;
+
+  (* Test nested formatting: bold + italic *)
+  let inline_bold_italic = Inline.italic_bold (Inline.text "Bold and italic") in
+  let inline_bold_italic_html = Inline.to_html inline_bold_italic in
+  Printf.printf "Inline.italic_bold test passed. HTML: %s\n" inline_bold_italic_html;
+
   (* Test inline link *)
-  let inline_link = Inline.link ~href:"https://example.com" "Click here" in
+  let inline_link = Inline.link ~href:"https://example.com" (Inline.text "Click here") in
   let inline_link_html = Inline.to_html inline_link in
   Printf.printf "Inline.link test passed. HTML: %s\n" inline_link_html;
+
+  (* Test styled link (bold CTA) *)
+  let inline_bold_link = Inline.link ~href:"https://example.com" (Inline.bold (Inline.text "Get Started")) in
+  let inline_bold_link_html = Inline.to_html inline_bold_link in
+  Printf.printf "Inline.bold link test passed. HTML: %s\n" inline_bold_link_html;
 
   (* Test inline concat *)
   let inline_concat = Inline.concat [
     Inline.text "Hello ";
-    Inline.bold "world";
+    Inline.bold (Inline.text "world");
     Inline.text "! ";
-    Inline.link ~href:"https://example.com" "Click here";
+    Inline.link ~href:"https://example.com" (Inline.text "Click here");
   ] in
   let inline_concat_html = Inline.to_html inline_concat in
   Printf.printf "Inline.concat test passed. HTML: %s\n" inline_concat_html;
@@ -231,9 +307,9 @@ let () =
   (* Test Paragraph with inline content *)
   let rich_paragraph = Paragraph.of_inline @@ Inline.concat [
     Inline.text "Welcome ";
-    Inline.bold "new user";
+    Inline.bold (Inline.text "new user");
     Inline.text "! Please ";
-    Inline.link ~href:"https://example.com/settings" "visit your settings";
+    Inline.link ~href:"https://example.com/settings" (Inline.text "visit your settings");
   ] in
   let rich_para_elem = Paragraph.to_element rich_paragraph in
   let rich_para_html = Element.to_html rich_para_elem in
@@ -241,11 +317,11 @@ let () =
 
   (* Test Paragraph with inline content and styling *)
   let styled_rich_paragraph = Paragraph.of_inline
-    ~color:Color.Brand.gray_600
+    ~color:Color.Brand.gray_500
     ~font_size:Font_size.small
     @@ Inline.concat [
       Inline.text "This is ";
-      Inline.italic "styled";
+      Inline.italic (Inline.text "styled");
       Inline.text " rich text.";
     ] in
   let styled_rich_para_elem = Paragraph.to_element styled_rich_paragraph in
@@ -255,7 +331,7 @@ let () =
   (* Test Heading with inline content *)
   let rich_heading = Heading.of_inline_h1 @@ Inline.concat [
     Inline.text "Welcome to ";
-    Inline.bold "typemail";
+    Inline.bold (Inline.text "typemail");
   ] in
   let rich_head_elem = Heading.to_element rich_heading in
   let rich_head_html = Element.to_html rich_head_elem in
@@ -267,7 +343,7 @@ let () =
     ~text_align:Text_align.Center
     @@ Inline.concat [
       Inline.text "You're ";
-      Inline.italic "invited";
+      Inline.italic (Inline.text "invited");
       Inline.text "!";
     ] in
   let styled_rich_head_elem = Heading.to_element styled_rich_heading in
@@ -289,13 +365,13 @@ let () =
   let rich_email_section = Section.v [
     Heading.to_element (Heading.of_inline_h1 @@ Inline.concat [
       Inline.text "Welcome to ";
-      Inline.bold "typemail";
+      Inline.bold (Inline.text "typemail");
     ]);
     Paragraph.to_element (Paragraph.of_inline @@ Inline.concat [
       Inline.text "This is a test email with ";
-      Inline.italic "rich text";
+      Inline.italic (Inline.text "rich text");
       Inline.text " formatting. Visit ";
-      Inline.link ~href:"https://example.com" "our website";
+      Inline.link ~href:"https://example.com" (Inline.text "our website");
       Inline.text " for more info.";
     ]);
     Button.to_element (Button.v

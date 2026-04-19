@@ -16,9 +16,10 @@
     - https://www.caniemail.com/features/css-text-align/
     - https://www.caniemail.com/features/css-font-size/
     - https://www.caniemail.com/features/css-font/
-    - https://www.caniemail.com/features/html-strong/
-    - https://www.caniemail.com/features/html-em/
-    - https://www.caniemail.com/features/html-a-href/
+    - https://www.caniemail.com/features/html-strong/ (100% supported)
+
+    Note: Inline formatting uses <em>, <u>, and <a> tags which are basic
+    HTML elements with universal email client support.
 
     Example:
     {[
@@ -73,6 +74,8 @@ val of_inline :
 
 (** Constructor with optional styling fields.
     For plain text content. Use [of_inline] for rich text formatting.
+
+    @param content Plain text content
 *)
 val make :
   ?color:Color.t ->

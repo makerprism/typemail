@@ -21,7 +21,11 @@
     text or [of_inline] for rich content.
 
     caniemail reference:
-    - https://www.caniemail.com/features/html-h1-h6/
+    - https://www.caniemail.com/features/html-h1-h6/ (100% supported)
+
+    Note: Inline formatting uses <strong>, <em>, <u>, and <a> tags which are
+    basic HTML elements with universal email client support. <strong> is
+    verified at 100% support on caniemail.
 
     Example:
     {[
@@ -151,8 +155,11 @@ val make :
   unit ->
   t
 
-(** General constructor with explicit level and rich inline content.
-    Use Inline.concat to combine multiple inline elements.
+(** General constructor with explicit level and rich inline formatting.
+    For plain text content, use [make] instead.
+
+    @param level Heading level
+    @param inline Rich inline content from the Inline module
 *)
 val of_inline :
   ?color:Color.t ->
@@ -165,5 +172,5 @@ val of_inline :
 (** Convert to Element.t for rendering *)
 val to_element : t -> Element.t
 
-(** Get heading tag as string ("h1", "h2", etc.") *)
+(** Get heading tag as string (h1, h2, etc.) *)
 val tag : t -> string
