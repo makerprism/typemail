@@ -14,7 +14,7 @@ let render_html element =
     let size_kb = size / 1024 in
     Error (Printf.sprintf "Email size %dKB exceeds Gmail's 102KB limit" size_kb)
 
-let render_email element =
+let render_email ?(body_background = Color.solid "#ffffff") element =
   (* Render the body content *)
   let body_html = Element.to_html element in
 
@@ -24,6 +24,21 @@ let render_email element =
     let size_kb = size / 1024 in
     Error (Printf.sprintf "Email size %dKB exceeds Gmail's 102KB limit" size_kb)
   else
+    (* Build body background style and attributes *)
+    let background_style = Color.to_style body_background in
+    let base_style = "margin: 0; padding: 0; word-spacing: normal;" in
+    let full_style = base_style ^ " " ^ background_style in
+
+    (* Add bgcolor attribute for Outlook gradient fallback *)
+    let bgcolor_attr = match body_background with
+      | Color.Solid hex -> Printf.sprintf " bgcolor=\"%s\"" hex
+      | Color.Gradient {fallback = Color.Solid fb_hex; _} ->
+          Printf.sprintf " bgcolor=\"%s\"" fb_hex
+      | Color.Gradient {fallback = Gradient _; _} ->
+          (* Should be impossible through API, but handle gracefully *)
+          " bgcolor=\"#ffffff\""
+    in
+
     (* Build complete email document *)
     let email_html = Printf.sprintf
       {|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,8 +64,8 @@ let render_email element =
   </style>
   <![endif]-->
 </head>
-<body style="margin: 0; padding: 0; word-spacing: normal; background-color: #ffffff;">
+<body%s style="%s">
 %s
 </body>
-</html>|} body_html in
+</html>|} bgcolor_attr full_style body_html in
     Ok email_html
