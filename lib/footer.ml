@@ -40,6 +40,7 @@ let to_element footer =
       "cellpadding", "0";
       "cellspacing", "0";
       "role", "presentation";
+      "width", "100%";
     ]
     ~children:[Element.Private.make @@ Element.Private.builder
       ~tag:"tr"

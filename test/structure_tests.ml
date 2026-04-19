@@ -381,6 +381,7 @@ let test_footer_string_shortcut () =
   let html = Element.to_html (Footer.to_element footer) in
 
   assert_test "Footer (string): table wrapper present" (html_contains html "<table");
+  assert_test "Footer (string): width=100% on outer table" (html_contains html "width=\"100%\"");
   assert_test "Footer (string): td cell present" (html_contains html "<td");
   assert_test "Footer (string): text content rendered" (html_contains html "© 2024 Example")
 
@@ -392,6 +393,7 @@ let test_footer_of_children () =
   ] in
   let html = Element.to_html (Footer.to_element footer) in
 
+  assert_test "Footer (children): width=100% on outer table" (html_contains html "width=\"100%\"");
   assert_test "Footer (children): first paragraph rendered" (html_contains html "line 1");
   assert_test "Footer (children): second paragraph rendered" (html_contains html "line 2");
   assert_test "Footer (children): paragraph tags present" (html_contains html "<p")
