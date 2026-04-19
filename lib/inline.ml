@@ -44,7 +44,7 @@ let link ~href (content : string) : t = Link {href; content = Text content}
 
 (** Compose multiple inline elements into a single inline value.
     This is useful when you need mixed formatting in a single paragraph. *)
-let rec concat (elements : t list) : t =
+let concat (elements : t list) : t =
   match elements with
   | [] -> Text ""
   | [x] -> x
