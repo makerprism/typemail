@@ -2,12 +2,17 @@
 
 type level = H1 | H2 | H3 | H4 | H5 | H6
 
+(** Content type - either plain text or rich inline formatting *)
+type content =
+  | Text of string
+  | Inline of Inline.t
+
 type t = {
   level: level;
   color: Color.t option;
   font_size: Font_size.t option;
   text_align: Text_align.t option;
-  content: string;
+  content: content;
 }
 
 let level_to_tag = function
@@ -21,20 +26,36 @@ let level_to_tag = function
 let tag heading = level_to_tag heading.level
 
 let make ?color ?font_size ?text_align ~level ~content () =
-  {level; color; font_size; text_align; content}
+  {level; color; font_size; text_align; content = Text content}
+
+let of_inline ?color ?font_size ?text_align ~level inline_content =
+  {level; color; font_size; text_align; content = Inline inline_content}
 
 let h1 ?color ?font_size ?text_align content =
-  {level = H1; color; font_size; text_align; content}
+  {level = H1; color; font_size; text_align; content = Text content}
 let h2 ?color ?font_size ?text_align content =
-  {level = H2; color; font_size; text_align; content}
+  {level = H2; color; font_size; text_align; content = Text content}
 let h3 ?color ?font_size ?text_align content =
-  {level = H3; color; font_size; text_align; content}
+  {level = H3; color; font_size; text_align; content = Text content}
 let h4 ?color ?font_size ?text_align content =
-  {level = H4; color; font_size; text_align; content}
+  {level = H4; color; font_size; text_align; content = Text content}
 let h5 ?color ?font_size ?text_align content =
-  {level = H5; color; font_size; text_align; content}
+  {level = H5; color; font_size; text_align; content = Text content}
 let h6 ?color ?font_size ?text_align content =
-  {level = H6; color; font_size; text_align; content}
+  {level = H6; color; font_size; text_align; content = Text content}
+
+let of_inline_h1 ?color ?font_size ?text_align inline_content =
+  {level = H1; color; font_size; text_align; content = Inline inline_content}
+let of_inline_h2 ?color ?font_size ?text_align inline_content =
+  {level = H2; color; font_size; text_align; content = Inline inline_content}
+let of_inline_h3 ?color ?font_size ?text_align inline_content =
+  {level = H3; color; font_size; text_align; content = Inline inline_content}
+let of_inline_h4 ?color ?font_size ?text_align inline_content =
+  {level = H4; color; font_size; text_align; content = Inline inline_content}
+let of_inline_h5 ?color ?font_size ?text_align inline_content =
+  {level = H5; color; font_size; text_align; content = Inline inline_content}
+let of_inline_h6 ?color ?font_size ?text_align inline_content =
+  {level = H6; color; font_size; text_align; content = Inline inline_content}
 
 let style_attributes h =
   let parts =
@@ -55,6 +76,9 @@ let to_element heading =
      style="color: ..." is universally supported.
      See https://www.caniemail.com/features/css-background-color/ *)
   let attributes = style_attributes heading in
-  let children = [Element.text heading.content] in
+  let children = match heading.content with
+    | Text s -> [Element.text s]
+    | Inline inline -> Inline.to_elements inline
+  in
   Element.Private.make @@
   Element.Private.builder ~tag ~attributes ~children

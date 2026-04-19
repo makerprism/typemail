@@ -195,4 +195,120 @@ let () =
   let small_email = Section.to_element small_email_section in
   Printf.printf "Small email within Gmail limit: %b\n" (Render.within_gmail_limit (Element.to_html small_email));
 
+  (* Test Inline module *)
+  Printf.printf "\n=== Testing Inline module ===\n";
+
+  (* Test inline text *)
+  let inline_text = Inline.text "Hello world" in
+  let inline_html = Inline.to_html inline_text in
+  Printf.printf "Inline.text test passed. HTML: %s\n" inline_html;
+
+  (* Test inline bold *)
+  let inline_bold = Inline.bold "Bold text" in
+  let inline_bold_html = Inline.to_html inline_bold in
+  Printf.printf "Inline.bold test passed. HTML: %s\n" inline_bold_html;
+
+  (* Test inline italic *)
+  let inline_italic = Inline.italic "Italic text" in
+  let inline_italic_html = Inline.to_html inline_italic in
+  Printf.printf "Inline.italic test passed. HTML: %s\n" inline_italic_html;
+
+  (* Test inline link *)
+  let inline_link = Inline.link ~href:"https://example.com" "Click here" in
+  let inline_link_html = Inline.to_html inline_link in
+  Printf.printf "Inline.link test passed. HTML: %s\n" inline_link_html;
+
+  (* Test inline concat *)
+  let inline_concat = Inline.concat [
+    Inline.text "Hello ";
+    Inline.bold "world";
+    Inline.text "! ";
+    Inline.link ~href:"https://example.com" "Click here";
+  ] in
+  let inline_concat_html = Inline.to_html inline_concat in
+  Printf.printf "Inline.concat test passed. HTML: %s\n" inline_concat_html;
+
+  (* Test Paragraph with inline content *)
+  let rich_paragraph = Paragraph.of_inline @@ Inline.concat [
+    Inline.text "Welcome ";
+    Inline.bold "new user";
+    Inline.text "! Please ";
+    Inline.link ~href:"https://example.com/settings" "visit your settings";
+  ] in
+  let rich_para_elem = Paragraph.to_element rich_paragraph in
+  let rich_para_html = Element.to_html rich_para_elem in
+  Printf.printf "Paragraph.of_inline test passed. HTML: %s\n" rich_para_html;
+
+  (* Test Paragraph with inline content and styling *)
+  let styled_rich_paragraph = Paragraph.of_inline
+    ~color:Color.Brand.gray_600
+    ~font_size:Font_size.small
+    @@ Inline.concat [
+      Inline.text "This is ";
+      Inline.italic "styled";
+      Inline.text " rich text.";
+    ] in
+  let styled_rich_para_elem = Paragraph.to_element styled_rich_paragraph in
+  let styled_rich_para_html = Element.to_html styled_rich_para_elem in
+  Printf.printf "Paragraph.of_inline with styling test passed. HTML: %s\n" styled_rich_para_html;
+
+  (* Test Heading with inline content *)
+  let rich_heading = Heading.of_inline_h1 @@ Inline.concat [
+    Inline.text "Welcome to ";
+    Inline.bold "typemail";
+  ] in
+  let rich_head_elem = Heading.to_element rich_heading in
+  let rich_head_html = Element.to_html rich_head_elem in
+  Printf.printf "Heading.of_inline_h1 test passed. HTML: %s\n" rich_head_html;
+
+  (* Test Heading with inline content and styling *)
+  let styled_rich_heading = Heading.of_inline_h2
+    ~color:Color.Brand.indigo_600
+    ~text_align:Text_align.Center
+    @@ Inline.concat [
+      Inline.text "You're ";
+      Inline.italic "invited";
+      Inline.text "!";
+    ] in
+  let styled_rich_head_elem = Heading.to_element styled_rich_heading in
+  let styled_rich_head_html = Element.to_html styled_rich_head_elem in
+  Printf.printf "Heading.of_inline_h2 with styling test passed. HTML: %s\n" styled_rich_head_html;
+
+  (* Test backward compatibility - plain text still works *)
+  let plain_paragraph = Paragraph.v "Plain text paragraph" in
+  let plain_para_elem = Paragraph.to_element plain_paragraph in
+  let plain_para_html = Element.to_html plain_para_elem in
+  Printf.printf "Paragraph.v (backward compat) test passed. HTML: %s\n" plain_para_html;
+
+  let plain_heading = Heading.h3 "Plain text heading" in
+  let plain_head_elem = Heading.to_element plain_heading in
+  let plain_head_html = Element.to_html plain_head_elem in
+  Printf.printf "Heading.h3 (backward compat) test passed. HTML: %s\n" plain_head_html;
+
+  (* Test complete email with rich text *)
+  let rich_email_section = Section.v [
+    Heading.to_element (Heading.of_inline_h1 @@ Inline.concat [
+      Inline.text "Welcome to ";
+      Inline.bold "typemail";
+    ]);
+    Paragraph.to_element (Paragraph.of_inline @@ Inline.concat [
+      Inline.text "This is a test email with ";
+      Inline.italic "rich text";
+      Inline.text " formatting. Visit ";
+      Inline.link ~href:"https://example.com" "our website";
+      Inline.text " for more info.";
+    ]);
+    Button.to_element (Button.v
+      ~href:"https://example.com"
+      ~background:(Color.solid "#4f46e5")
+      ~text_color:Color.Brand.white
+      ~width_px:200
+      ~height_px:44
+      "Get Started");
+  ] in
+  let rich_email = Section.to_element rich_email_section in
+  match Render.render_email rich_email with
+  | Ok email_html -> Printf.printf "Rich email render test passed. Length: %d bytes\n" (String.length email_html)
+  | Error msg -> Printf.printf "Rich email render test failed: %s\n" msg;
+
   Printf.printf "\n✅ All tests passed!\n"
