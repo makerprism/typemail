@@ -593,6 +593,74 @@ let test_row_preserves_column_attrs () =
   assert_test "Row: column valign=\"top\" attribute preserved"
     (html_contains html "valign=\"top\"")
 
+(* Inline tests *)
+let test_inline_text () =
+  let html = Inline.to_html [Inline.v "Hello world"] in
+  assert_test "Inline text: renders plain text" (html_contains html "Hello world")
+
+let test_inline_bold () =
+  let html = Inline.to_html [Inline.bold (Inline.v "bold text")] in
+  assert_test "Inline bold: <strong> tag present" (html_contains html "<strong>");
+  assert_test "Inline bold: content present" (html_contains html "bold text")
+
+let test_inline_italic () =
+  let html = Inline.to_html [Inline.italic (Inline.v "italic text")] in
+  assert_test "Inline italic: <em> tag present" (html_contains html "<em>");
+  assert_test "Inline italic: content present" (html_contains html "italic text")
+
+let test_inline_link () =
+  let html = Inline.to_html [Inline.link ~href:"https://example.com" (Inline.v "click here")] in
+  assert_test "Inline link: <a> tag present" (html_contains html "<a");
+  assert_test "Inline link: href attribute present" (html_contains html "href=\"https://example.com\"");
+  assert_test "Inline link: content present" (html_contains html "click here")
+
+let test_inline_code () =
+  let html = Inline.to_html [Inline.code "console.log('test')"] in
+  assert_test "Inline code: <code> tag present" (html_contains html "<code");
+  assert_test "Inline code: background-color present" (html_contains html "background-color: #f3f4f6");
+  assert_test "Inline code: monospace font present" (html_contains html "font-family: monospace")
+
+let test_inline_span_color () =
+  let html = Inline.to_html [Inline.span ~color:(Color.solid "#ff0000") "red text"] in
+  assert_test "Inline span: <span> tag present" (html_contains html "<span");
+  assert_test "Inline span: color style present" (html_contains html "color: #ff0000")
+
+let test_inline_nested_bold_link () =
+  let html = Inline.to_html [
+    Inline.link ~href:"https://example.com" (Inline.bold (Inline.v "click here"))
+  ] in
+  assert_test "Inline nested: <a> tag present" (html_contains html "<a");
+  assert_test "Inline nested: <strong> inside <a>" (html_contains html "<strong>");
+  assert_test "Inline nested: content present" (html_contains html "click here")
+
+let test_inline_paragraph_of_children () =
+  let para = Paragraph.of_children [
+    Inline.v "Hello ";
+    Inline.bold (Inline.v "world");
+  ] in
+  let html = Element.to_html (Paragraph.to_element para) in
+  assert_test "Paragraph of_children: <p> tag present" (html_contains html "<p>");
+  assert_test "Paragraph of_children: bold content present" (html_contains html "<strong>");
+  assert_test "Paragraph of_children: text content present" (html_contains html "Hello")
+
+let test_inline_mixed_content () =
+  let html = Inline.to_html [
+    Inline.v "Text with ";
+    Inline.bold (Inline.v "bold");
+    Inline.v ", ";
+    Inline.italic (Inline.v "italic");
+    Inline.v ", and ";
+    Inline.link ~href:"https://example.com" (Inline.v "link");
+  ] in
+  assert_test "Inline mixed: contains bold" (html_contains html "<strong>");
+  assert_test "Inline mixed: contains italic" (html_contains html "<em>");
+  assert_test "Inline mixed: contains link" (html_contains html "<a")
+
+let test_inline_escaping () =
+  let html = Inline.to_html [Inline.v "<script>alert('xss')</script>"] in
+  assert_test "Inline escaping: < entity escaped" (html_contains html "&lt;");
+  assert_test "Inline escaping: Raw script NOT present" (not (html_contains html "<script>"))
+
 let () =
   Printf.printf "\n=== typemail Structure Tests ===\n\n";
   test_button_vml ();
@@ -636,6 +704,16 @@ let () =
   test_row_empty ();
   test_row_make_matches_of_columns ();
   test_row_preserves_column_attrs ();
+  test_inline_text ();
+  test_inline_bold ();
+  test_inline_italic ();
+  test_inline_link ();
+  test_inline_code ();
+  test_inline_span_color ();
+  test_inline_nested_bold_link ();
+  test_inline_paragraph_of_children ();
+  test_inline_mixed_content ();
+  test_inline_escaping ();
 
   Printf.printf "\n=== Summary ===\n";
   Printf.printf "Total: %d | Passed: %d | Failed: %d\n" !test_count !passed !failed;

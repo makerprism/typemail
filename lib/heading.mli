@@ -17,13 +17,13 @@
     into a single inline [style] attribute at render time.
 
     Headings support both plain text and rich inline formatting (bold,
-    italic, links) via the Inline module. Use [h1], [h2], etc. for plain
-    text or [of_inline] for rich content.
+    italic, links, code) via the Inline module. Use [h1], [h2], etc. for plain
+    text or [of_children_h1], [of_children_h2], etc. for rich content.
 
     caniemail reference:
     - https://www.caniemail.com/features/html-h1-h6/ (100% supported)
 
-    Note: Inline formatting uses <strong>, <em>, <u>, and <a> tags which are
+    Note: Inline formatting uses <strong>, <em>, <code>, and <a> tags which are
     basic HTML elements with universal email client support. <strong> is
     verified at 100% support on caniemail.
 
@@ -33,9 +33,9 @@
       Heading.h1 ~color:Color.Brand.white "You're invited"
 
       (* Rich text heading with inline formatting *)
-      Heading.of_inline_h1 @@ Inline.concat [
-        Inline.text "Welcome ";
-        Inline.bold "home";
+      Heading.of_children_h1 [
+        Inline.v "Welcome ";
+        Inline.bold (Inline.v "home");
       ]
     ]}
 *)
@@ -53,7 +53,7 @@ type t = private {
 (** Content type - either plain text or rich inline formatting *)
 and content =
   | Text of string
-  | Inline of Inline.t
+  | Inline of Inline.t list
 
 (** Smart constructors for each heading level with plain text.
 
@@ -104,47 +104,47 @@ val h6 :
     @param color Optional text color
     @param font_size Optional font size
     @param text_align Optional text alignment
-    @param inline Heading inline content from the Inline module
+    @param children Rich inline content from the Inline module
 *)
-val of_inline_h1 :
+val of_children_h1 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
-val of_inline_h2 :
+val of_children_h2 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
-val of_inline_h3 :
+val of_children_h3 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
-val of_inline_h4 :
+val of_children_h4 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
-val of_inline_h5 :
+val of_children_h5 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
-val of_inline_h6 :
+val of_children_h6 :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
 
 (** General constructor with explicit level and plain text content.
-    For rich text formatting, use [of_inline] instead.
+    For rich text formatting, use [of_children] instead.
 *)
 val make :
   ?color:Color.t ->
@@ -159,14 +159,14 @@ val make :
     For plain text content, use [make] instead.
 
     @param level Heading level
-    @param inline Rich inline content from the Inline module
+    @param children Rich inline content from the Inline module
 *)
-val of_inline :
+val of_children :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?text_align:Text_align.t ->
   level:level ->
-  Inline.t ->
+  Inline.t list ->
   t
 
 (** Convert to Element.t for rendering *)

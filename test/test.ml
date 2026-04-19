@@ -260,85 +260,85 @@ let () =
   | Error msg -> Printf.printf "Nested gradient fallback test failed: %s\n" msg;
 
   (* Test inline text *)
-  let inline_text = Inline.text "Hello world" in
-  let inline_html = Inline.to_html inline_text in
-  Printf.printf "Inline.text test passed. HTML: %s\n" inline_html;
+  let inline_text = Inline.v "Hello world" in
+  let inline_html = Inline.to_html [inline_text] in
+  Printf.printf "Inline.v test passed. HTML: %s\n" inline_html;
 
   (* Test inline bold *)
-  let inline_bold = Inline.bold "Bold text" in
-  let inline_bold_html = Inline.to_html inline_bold in
+  let inline_bold = Inline.bold (Inline.v "Bold text") in
+  let inline_bold_html = Inline.to_html [inline_bold] in
   Printf.printf "Inline.bold test passed. HTML: %s\n" inline_bold_html;
 
   (* Test inline italic *)
-  let inline_italic = Inline.italic "Italic text" in
-  let inline_italic_html = Inline.to_html inline_italic in
+  let inline_italic = Inline.italic (Inline.v "Italic text") in
+  let inline_italic_html = Inline.to_html [inline_italic] in
   Printf.printf "Inline.italic test passed. HTML: %s\n" inline_italic_html;
 
   (* Test inline link *)
-  let inline_link = Inline.link ~href:"https://example.com" "Click here" in
-  let inline_link_html = Inline.to_html inline_link in
+  let inline_link = Inline.link ~href:"https://example.com" (Inline.v "Click here") in
+  let inline_link_html = Inline.to_html [inline_link] in
   Printf.printf "Inline.link test passed. HTML: %s\n" inline_link_html;
 
   (* Test styled link (bold CTA) *)
-  let inline_bold_link = Inline.link ~href:"https://example.com" "Get Started" in
-  let inline_bold_link_html = Inline.to_html inline_bold_link in
+  let inline_bold_link = Inline.link ~href:"https://example.com" (Inline.v "Get Started") in
+  let inline_bold_link_html = Inline.to_html [inline_bold_link] in
   Printf.printf "Inline.bold link test passed. HTML: %s\n" inline_bold_link_html;
 
   (* Test inline concat *)
-  let inline_concat = Inline.concat [
-    Inline.text "Hello ";
-    Inline.bold "world";
-    Inline.text "! ";
-    Inline.link ~href:"https://example.com" "Click here";
+  let inline_concat = (* List of inline elements - no longer needs concat *) [
+    Inline.v "Hello ";
+    Inline.bold (Inline.v "world");
+    Inline.v "! ";
+    Inline.link ~href:"https://example.com" (Inline.v "Click here");
   ] in
   let inline_concat_html = Inline.to_html inline_concat in
-  Printf.printf "Inline.concat test passed. HTML: %s\n" inline_concat_html;
+  Printf.printf "(* List of inline elements - no longer needs concat *) test passed. HTML: %s\n" inline_concat_html;
 
   (* Test Paragraph with inline content *)
-  let rich_paragraph = Paragraph.of_inline @@ Inline.concat [
-    Inline.text "Welcome ";
-    Inline.bold "new user";
-    Inline.text "! Please ";
-    Inline.link ~href:"https://example.com/settings" "visit your settings";
+  let rich_paragraph = Paragraph.of_children @@ (* List of inline elements - no longer needs concat *) [
+    Inline.v "Welcome ";
+    Inline.bold (Inline.v "new user");
+    Inline.v "! Please ";
+    Inline.link ~href:"https://example.com/settings" (Inline.v "visit your settings");
   ] in
   let rich_para_elem = Paragraph.to_element rich_paragraph in
   let rich_para_html = Element.to_html rich_para_elem in
-  Printf.printf "Paragraph.of_inline test passed. HTML: %s\n" rich_para_html;
+  Printf.printf "Paragraph.of_children test passed. HTML: %s\n" rich_para_html;
 
   (* Test Paragraph with inline content and styling *)
-  let styled_rich_paragraph = Paragraph.of_inline
+  let styled_rich_paragraph = Paragraph.of_children
     ~color:Color.Brand.gray_500
     ~font_size:Font_size.small
-    @@ Inline.concat [
-      Inline.text "This is ";
-      Inline.italic "styled";
-      Inline.text " rich text.";
+    @@ (* List of inline elements - no longer needs concat *) [
+      Inline.v "This is ";
+      Inline.italic (Inline.v "styled");
+      Inline.v " rich text.";
     ] in
   let styled_rich_para_elem = Paragraph.to_element styled_rich_paragraph in
   let styled_rich_para_html = Element.to_html styled_rich_para_elem in
-  Printf.printf "Paragraph.of_inline with styling test passed. HTML: %s\n" styled_rich_para_html;
+  Printf.printf "Paragraph.of_children with styling test passed. HTML: %s\n" styled_rich_para_html;
 
   (* Test Heading with inline content *)
-  let rich_heading = Heading.of_inline_h1 @@ Inline.concat [
-    Inline.text "Welcome to ";
-    Inline.bold "typemail";
+  let rich_heading = Heading.of_children_h1 @@ (* List of inline elements - no longer needs concat *) [
+    Inline.v "Welcome to ";
+    Inline.bold (Inline.v "typemail");
   ] in
   let rich_head_elem = Heading.to_element rich_heading in
   let rich_head_html = Element.to_html rich_head_elem in
-  Printf.printf "Heading.of_inline_h1 test passed. HTML: %s\n" rich_head_html;
+  Printf.printf "Heading.of_children_h1 test passed. HTML: %s\n" rich_head_html;
 
   (* Test Heading with inline content and styling *)
-  let styled_rich_heading = Heading.of_inline_h2
+  let styled_rich_heading = Heading.of_children_h2
     ~color:Color.Brand.indigo_600
     ~text_align:Text_align.Center
-    @@ Inline.concat [
-      Inline.text "You're ";
-      Inline.italic "invited";
-      Inline.text "!";
+    @@ (* List of inline elements - no longer needs concat *) [
+      Inline.v "You're ";
+      Inline.italic (Inline.v "invited");
+      Inline.v "!";
     ] in
   let styled_rich_head_elem = Heading.to_element styled_rich_heading in
   let styled_rich_head_html = Element.to_html styled_rich_head_elem in
-  Printf.printf "Heading.of_inline_h2 with styling test passed. HTML: %s\n" styled_rich_head_html;
+  Printf.printf "Heading.of_children_h2 with styling test passed. HTML: %s\n" styled_rich_head_html;
 
   (* Test backward compatibility - plain text still works *)
   let plain_paragraph = Paragraph.v "Plain text paragraph" in
@@ -353,16 +353,16 @@ let () =
 
   (* Test complete email with rich text *)
   let rich_email_section = Section.v [
-    Heading.to_element (Heading.of_inline_h1 @@ Inline.concat [
-      Inline.text "Welcome to ";
-      Inline.bold "typemail";
+    Heading.to_element (Heading.of_children_h1 @@ (* List of inline elements - no longer needs concat *) [
+      Inline.v "Welcome to ";
+      Inline.bold (Inline.v "typemail");
     ]);
-    Paragraph.to_element (Paragraph.of_inline @@ Inline.concat [
-      Inline.text "This is a test email with ";
-      Inline.italic "rich text";
-      Inline.text " formatting. Visit ";
-      Inline.link ~href:"https://example.com" "our website";
-      Inline.text " for more info.";
+    Paragraph.to_element (Paragraph.of_children @@ (* List of inline elements - no longer needs concat *) [
+      Inline.v "This is a test email with ";
+      Inline.italic (Inline.v "rich text");
+      Inline.v " formatting. Visit ";
+      Inline.link ~href:"https://example.com" (Inline.v "our website");
+      Inline.v " for more info.";
     ]);
     Button.to_element (Button.v
       ~href:"https://example.com"

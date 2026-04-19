@@ -9,8 +9,8 @@
     which is the only cross-client reliable way to apply text styling.
 
     Paragraphs support both plain text and rich inline formatting (bold,
-    italic, links) via the Inline module. Use [v] for plain text or
-    [of_inline] for rich content.
+    italic, links, code) via the Inline module. Use [v] for plain text
+    or [of_children] for rich content.
 
     caniemail references:
     - https://www.caniemail.com/features/css-text-align/
@@ -18,8 +18,8 @@
     - https://www.caniemail.com/features/css-font/
     - https://www.caniemail.com/features/html-strong/ (100% supported)
 
-    Note: Inline formatting uses <em>, <u>, and <a> tags which are basic
-    HTML elements with universal email client support.
+    Note: Inline formatting uses <strong>, <em>, <code>, and <a> tags
+    which are basic HTML elements with universal email client support.
 
     Example:
     {[
@@ -34,11 +34,11 @@
         ()
 
       (* Rich text with inline formatting *)
-      Paragraph.of_inline @@ Inline.concat [
-        Inline.text "Welcome ";
-        Inline.bold "new user";
-        Inline.text "! ";
-        Inline.link ~href:"https://example.com" "Get started";
+      Paragraph.of_children [
+        Inline.v "Welcome ";
+        Inline.bold (Inline.v "new user");
+        Inline.v "! ";
+        Inline.link ~href:"https://example.com" (Inline.v "Get started");
       ]
     ]}
 *)
@@ -54,26 +54,26 @@ type t = private {
 (** Content type - either plain text or rich inline formatting *)
 and content =
   | Text of string
-  | Inline of Inline.t
+  | Inline of Inline.t list
 
 (** Smart constructor for common case - plain text, no styling specified *)
 val v : string -> t
 
 (** Constructor for rich inline formatting with optional styling.
-    Use Inline.concat to combine multiple inline elements.
+    Accepts a list of inline elements for mixed formatting.
 
-    @param inline Rich inline content from the Inline module
+    @param children Rich inline content from the Inline module
 *)
-val of_inline :
+val of_children :
   ?color:Color.t ->
   ?font_size:Font_size.t ->
   ?font_style:Font_style.t ->
   ?text_align:Text_align.t ->
-  Inline.t ->
+  Inline.t list ->
   t
 
 (** Constructor with optional styling fields.
-    For plain text content. Use [of_inline] for rich text formatting.
+    For plain text content. Use [of_children] for rich text formatting.
 
     @param content Plain text content
 *)

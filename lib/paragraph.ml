@@ -3,7 +3,7 @@
 (** Content type - either plain text or rich inline formatting *)
 type content =
   | Text of string
-  | Inline of Inline.t
+  | Inline of Inline.t list
 
 type t = {
   content: content;
@@ -16,8 +16,8 @@ type t = {
 let make ?color ?font_size ?font_style ?text_align ~content () =
   {content = Text content; color; font_size; font_style; text_align}
 
-let of_inline ?color ?font_size ?font_style ?text_align inline_content =
-  {content = Inline inline_content; color; font_size; font_style; text_align}
+let of_children ?color ?font_size ?font_style ?text_align children =
+  {content = Inline children; color; font_size; font_style; text_align}
 
 let v content =
   {content = Text content; color = None; font_size = None; font_style = None; text_align = None}
@@ -44,7 +44,7 @@ let to_element paragraph =
   let attributes = style_attributes paragraph in
   let children = match paragraph.content with
     | Text s -> [Element.text s]
-    | Inline inline -> Inline.to_elements inline
+    | Inline inlines -> Inline.to_elements inlines
   in
   Element.Private.make @@
   Element.Private.builder ~tag ~attributes ~children
