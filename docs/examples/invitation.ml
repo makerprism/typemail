@@ -35,11 +35,11 @@ let invitation_email ~inviter_name ~presence_name ~invitation_url =
           ~content:"Click the button below to accept your invitation." ();
 
         (* Call-to-action button with VML for Outlook *)
-        Button.to_element @@ Button.v
+        (* Using auto-sized button - width calculated from text *)
+        Button.to_element @@ Button.v_auto
           ~href:invitation_url
           ~background:(Color.solid "#4f46e5")
           ~text_color:Color.Brand.white
-          ~width_px:200
           ~height_px:44
           "Accept invitation";
       ]

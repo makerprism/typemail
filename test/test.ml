@@ -55,6 +55,49 @@ let () =
   let button_html = Element.to_html button_elem in
   Printf.printf "Button test passed. HTML: %s\n" button_html;
 
+  (* Test Auto-sized Button *)
+  let auto_button = Button.v_auto
+    ~href:"https://example.com"
+    ~background:(Color.solid "#4f46e5")
+    ~text_color:Color.Brand.white
+    ~height_px:44
+    "Update Payment Method" in
+  let auto_button_elem = Button.to_element auto_button in
+  let auto_button_html = Element.to_html auto_button_elem in
+  Printf.printf "Auto-sized button test passed. HTML: %s\n" auto_button_html;
+
+  (* Test Fixed-width Button Overflow Validation - should pass *)
+  let long_text_fixed = Button.v
+    ~href:"https://example.com"
+    ~background:(Color.solid "#4f46e5")
+    ~text_color:Color.Brand.white
+    ~width_px:300
+    ~height_px:44
+    "This is a long button text that fits" in
+  let long_text_elem = Button.to_element long_text_fixed in
+  let long_text_html = Element.to_html long_text_elem in
+  Printf.printf "Fixed-width button (valid) test passed. HTML: %s\n" long_text_html;
+
+  (* Test Fixed-width Button Overflow Validation - should fail *)
+  begin
+    try
+      let _too_small = Button.v
+        ~href:"https://example.com"
+        ~background:(Color.solid "#4f46e5")
+        ~text_color:Color.Brand.white
+        ~width_px:100
+        ~height_px:44
+        "This is way too long for this button" in
+      Printf.printf "ERROR: Fixed-width validation test should have failed but didn't!\n";
+      exit 1
+    with
+    | Failure msg ->
+        Printf.printf "Fixed-width button overflow validation test passed. Error: %s\n" msg
+    | _ ->
+        Printf.printf "ERROR: Unexpected exception type in overflow validation test\n";
+        exit 1
+  end;
+
   (* Test Column *)
   let col1 = Column.v
     ~width:200
@@ -173,11 +216,10 @@ let () =
   let simple_email_section = Section.v [
     Heading.to_element (Heading.h1 "Welcome to typemail");
     Paragraph.to_element (Paragraph.v "This is a test email.");
-    Button.to_element (Button.v
+    Button.to_element (Button.v_auto
       ~href:"https://example.com"
       ~background:(Color.solid "#4f46e5")
       ~text_color:Color.Brand.white
-      ~width_px:200
       ~height_px:44
       "Get Started");
   ] in
