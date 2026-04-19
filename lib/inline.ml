@@ -50,15 +50,6 @@ let concat (elements : t list) : t =
   | [x] -> x
   | xs -> Concat xs
 
-(** Flatten nested Concat nodes for more efficient rendering *)
-let rec normalize : t -> t list = function
-  | Text s -> [Text s]
-  | Bold x -> [Bold x]
-  | Italic x -> [Italic x]
-  | Link l -> [Link l]
-  | Concat xs ->
-      List.concat (List.map normalize xs)
-
 (** Convert inline content to Element.t children.
     Returns a list of Element.t values that can be used as children. *)
 let rec to_elements : t -> Element.t list = function
