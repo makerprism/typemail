@@ -265,7 +265,7 @@ let () =
   Printf.printf "Inline.text test passed. HTML: %s\n" inline_html;
 
   (* Test inline bold *)
-  let inline_bold = Inline.bold (Inline.text "Bold text") in
+  let inline_bold = Inline.bold "Bold text") in
   let inline_bold_html = Inline.to_html inline_bold in
   Printf.printf "Inline.bold test passed. HTML: %s\n" inline_bold_html;
 
@@ -280,7 +280,7 @@ let () =
   Printf.printf "Inline.underline test passed. HTML: %s\n" inline_underline_html;
 
   (* Test nested formatting: bold + italic *)
-  let inline_bold_italic = Inline.italic_bold (Inline.text "Bold and italic") in
+  let inline_bold_italic = Inline.italic_bold "Bold and italic") in
   let inline_bold_italic_html = Inline.to_html inline_bold_italic in
   Printf.printf "Inline.italic_bold test passed. HTML: %s\n" inline_bold_italic_html;
 
@@ -290,14 +290,14 @@ let () =
   Printf.printf "Inline.link test passed. HTML: %s\n" inline_link_html;
 
   (* Test styled link (bold CTA) *)
-  let inline_bold_link = Inline.link ~href:"https://example.com" (Inline.bold (Inline.text "Get Started")) in
+  let inline_bold_link = Inline.link ~href:"https://example.com" (Inline.bold "Get Started")) in
   let inline_bold_link_html = Inline.to_html inline_bold_link in
   Printf.printf "Inline.bold link test passed. HTML: %s\n" inline_bold_link_html;
 
   (* Test inline concat *)
   let inline_concat = Inline.concat [
     Inline.text "Hello ";
-    Inline.bold (Inline.text "world");
+    Inline.bold "world");
     Inline.text "! ";
     Inline.link ~href:"https://example.com" (Inline.text "Click here");
   ] in
@@ -307,7 +307,7 @@ let () =
   (* Test Paragraph with inline content *)
   let rich_paragraph = Paragraph.of_inline @@ Inline.concat [
     Inline.text "Welcome ";
-    Inline.bold (Inline.text "new user");
+    Inline.bold "new user");
     Inline.text "! Please ";
     Inline.link ~href:"https://example.com/settings" (Inline.text "visit your settings");
   ] in
@@ -331,7 +331,7 @@ let () =
   (* Test Heading with inline content *)
   let rich_heading = Heading.of_inline_h1 @@ Inline.concat [
     Inline.text "Welcome to ";
-    Inline.bold (Inline.text "typemail");
+    Inline.bold "typemail");
   ] in
   let rich_head_elem = Heading.to_element rich_heading in
   let rich_head_html = Element.to_html rich_head_elem in
@@ -365,7 +365,7 @@ let () =
   let rich_email_section = Section.v [
     Heading.to_element (Heading.of_inline_h1 @@ Inline.concat [
       Inline.text "Welcome to ";
-      Inline.bold (Inline.text "typemail");
+      Inline.bold "typemail");
     ]);
     Paragraph.to_element (Paragraph.of_inline @@ Inline.concat [
       Inline.text "This is a test email with ";
