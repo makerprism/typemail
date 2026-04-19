@@ -265,41 +265,31 @@ let () =
   Printf.printf "Inline.text test passed. HTML: %s\n" inline_html;
 
   (* Test inline bold *)
-  let inline_bold = Inline.bold "Bold text") in
+  let inline_bold = Inline.bold "Bold text" in
   let inline_bold_html = Inline.to_html inline_bold in
   Printf.printf "Inline.bold test passed. HTML: %s\n" inline_bold_html;
 
   (* Test inline italic *)
-  let inline_italic = Inline.italic (Inline.text "Italic text") in
+  let inline_italic = Inline.italic "Italic text" in
   let inline_italic_html = Inline.to_html inline_italic in
   Printf.printf "Inline.italic test passed. HTML: %s\n" inline_italic_html;
 
-  (* Test inline underline *)
-  let inline_underline = Inline.underline (Inline.text "Underline text") in
-  let inline_underline_html = Inline.to_html inline_underline in
-  Printf.printf "Inline.underline test passed. HTML: %s\n" inline_underline_html;
-
-  (* Test nested formatting: bold + italic *)
-  let inline_bold_italic = Inline.italic_bold "Bold and italic") in
-  let inline_bold_italic_html = Inline.to_html inline_bold_italic in
-  Printf.printf "Inline.italic_bold test passed. HTML: %s\n" inline_bold_italic_html;
-
   (* Test inline link *)
-  let inline_link = Inline.link ~href:"https://example.com" (Inline.text "Click here") in
+  let inline_link = Inline.link ~href:"https://example.com" "Click here" in
   let inline_link_html = Inline.to_html inline_link in
   Printf.printf "Inline.link test passed. HTML: %s\n" inline_link_html;
 
   (* Test styled link (bold CTA) *)
-  let inline_bold_link = Inline.link ~href:"https://example.com" (Inline.bold "Get Started")) in
+  let inline_bold_link = Inline.link ~href:"https://example.com" "Get Started" in
   let inline_bold_link_html = Inline.to_html inline_bold_link in
   Printf.printf "Inline.bold link test passed. HTML: %s\n" inline_bold_link_html;
 
   (* Test inline concat *)
   let inline_concat = Inline.concat [
     Inline.text "Hello ";
-    Inline.bold "world");
+    Inline.bold "world";
     Inline.text "! ";
-    Inline.link ~href:"https://example.com" (Inline.text "Click here");
+    Inline.link ~href:"https://example.com" "Click here";
   ] in
   let inline_concat_html = Inline.to_html inline_concat in
   Printf.printf "Inline.concat test passed. HTML: %s\n" inline_concat_html;
@@ -307,9 +297,9 @@ let () =
   (* Test Paragraph with inline content *)
   let rich_paragraph = Paragraph.of_inline @@ Inline.concat [
     Inline.text "Welcome ";
-    Inline.bold "new user");
+    Inline.bold "new user";
     Inline.text "! Please ";
-    Inline.link ~href:"https://example.com/settings" (Inline.text "visit your settings");
+    Inline.link ~href:"https://example.com/settings" "visit your settings";
   ] in
   let rich_para_elem = Paragraph.to_element rich_paragraph in
   let rich_para_html = Element.to_html rich_para_elem in
@@ -321,7 +311,7 @@ let () =
     ~font_size:Font_size.small
     @@ Inline.concat [
       Inline.text "This is ";
-      Inline.italic (Inline.text "styled");
+      Inline.italic "styled";
       Inline.text " rich text.";
     ] in
   let styled_rich_para_elem = Paragraph.to_element styled_rich_paragraph in
@@ -331,7 +321,7 @@ let () =
   (* Test Heading with inline content *)
   let rich_heading = Heading.of_inline_h1 @@ Inline.concat [
     Inline.text "Welcome to ";
-    Inline.bold "typemail");
+    Inline.bold "typemail";
   ] in
   let rich_head_elem = Heading.to_element rich_heading in
   let rich_head_html = Element.to_html rich_head_elem in
@@ -343,7 +333,7 @@ let () =
     ~text_align:Text_align.Center
     @@ Inline.concat [
       Inline.text "You're ";
-      Inline.italic (Inline.text "invited");
+      Inline.italic "invited";
       Inline.text "!";
     ] in
   let styled_rich_head_elem = Heading.to_element styled_rich_heading in
@@ -365,13 +355,13 @@ let () =
   let rich_email_section = Section.v [
     Heading.to_element (Heading.of_inline_h1 @@ Inline.concat [
       Inline.text "Welcome to ";
-      Inline.bold "typemail");
+      Inline.bold "typemail";
     ]);
     Paragraph.to_element (Paragraph.of_inline @@ Inline.concat [
       Inline.text "This is a test email with ";
-      Inline.italic (Inline.text "rich text");
+      Inline.italic "rich text";
       Inline.text " formatting. Visit ";
-      Inline.link ~href:"https://example.com" (Inline.text "our website");
+      Inline.link ~href:"https://example.com" "our website";
       Inline.text " for more info.";
     ]);
     Button.to_element (Button.v

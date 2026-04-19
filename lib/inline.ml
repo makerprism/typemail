@@ -112,11 +112,11 @@ let rec size_in_bytes : t -> int = function
       (* <em>...</em> adds 9 characters *)
       9 + size_in_bytes x
   | Link {href; content} ->
-      (* <a href="href">...</a> structure.
-         For attribute escaping, & becomes &amp; (5 chars), " becomes &quot; (6 chars).
+      (* Link structure: <a href=URL>content</a>.
+         For attribute escaping, & becomes &amp; (5 chars).
          In practice, most URLs don't need escaping, so we use length as approximation.
          This is a conservative estimate for limit checking. *)
-      let attr_size = String.length href + 10 in (* href="..." *)
+      let attr_size = String.length href + 10 in
       9 + attr_size + size_in_bytes content (* <a> + </a> = 9 chars *)
   | Concat xs ->
       List.fold_left (fun acc x -> acc + size_in_bytes x) 0 xs
